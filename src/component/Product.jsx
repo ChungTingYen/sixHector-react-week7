@@ -66,8 +66,6 @@ const Product = (props) => {
             查看更多(Modal)
           </button>
           <Link
-            // onClick={atHandleSeeMore}
-            // type="button"
             to={`/products/${product.id}`}
             className="btn btn-outline-secondary"
           >

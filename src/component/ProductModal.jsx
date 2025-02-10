@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
 import { apiService } from "../apiService/apiService";
 import { Modal } from "bootstrap";
-import { useLoading } from "../component/LoadingContext";
+// import { useLoading } from "../component/LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 const ProductModal = (props) => {
   const {

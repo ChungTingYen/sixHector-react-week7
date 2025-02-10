@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useCallback } from "react";
 import { apiService } from "../apiService/apiService";
 import { Product, LoadingOverlay, ProductModal, Toast } from "../component";
 import { toastInfo } from "../data/dataModel";
@@ -9,17 +9,16 @@ export default function ProductsPage() {
   const [tempProduct, setTempProduct] = useState(tempProductDefaultValue);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const [reload, setReload] = useState(true);
   const [isShowToast, setIsShowToast] = useState(false);
 
   const openProductDetailModal = () => {
     setIsProductModalOpen(true);
   };
-  const handleSeeMore = (productId) => {
+  const handleSeeMore = useCallback((productId) => {
     const temp = products.find((item) => item.id === productId);
     setTempProduct(temp);
     openProductDetailModal();
-  };
+  },[products]);
   const setToastContent = (toastText, type) => {
     setIsShowToast(true);
     toastInfo.toastText = toastText;

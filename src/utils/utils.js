@@ -1,0 +1,122 @@
+import Swal from "sweetalert2";
+
+export const  setToastContent = (setIsShowToast,toastInfo,toastText,type) => {
+  setIsShowToast(true);
+  toastInfo.toastText = toastText;
+  toastInfo.type = type;
+};
+
+export const sweetalert = (title, text, icon, confirmButtonText) => {
+  const sweetalertObject = { title, text, icon, confirmButtonText };
+  Swal.fire(sweetalertObject);
+};
+
+// import axios from 'axios';
+import { apiServiceAdmin } from '../apiService/apiService';
+
+const APIPath = import.meta.env.VITE_API_PATH;
+
+export const getHeadersFromCookie = ()=>{
+  const  token =  document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("hexToken="))
+    ?.split("=")[1] || null;
+  const headers = {
+    Authorization: token,
+  };
+  return headers;
+};
+
+export async function deleteProductsSequentially(productData) { 
+  const results = []; 
+  const headers = getHeadersFromCookie();
+  for (const [index, data] of productData.entries()) { 
+    // console.log(`index=${index}`); 
+    // console.log("headers=", headers); 
+    try { 
+      await apiServiceAdmin.axiosDeleteProduct( `/api/${APIPath}/admin/product/${data.id}`, 
+        headers ); 
+    } catch (error) { 
+      console.error(`Error deleting product ${data.id}:`, error);
+      const errorMessage = `Error adding product ${data.id}:`;
+      results.push(errorMessage); 
+      // 或其他適當的錯誤處理方式 
+    } 
+  } return results; 
+}
+
+export async function AddProductsSequentially(productData) { 
+  const results = []; 
+  const headers = getHeadersFromCookie();
+  for (const [index, data] of productData.entries()) { 
+    const wrapData = { data:{ ...data,buyerNumber:100 } };
+    // const wrapData = { data: temp };
+    try { 
+      await apiServiceAdmin.axiosPostAddProduct(
+        `/api/${APIPath}/admin/product`,
+        wrapData,
+        headers
+      );
+    } catch (error) { 
+      console.error(`Error adding product ${data.id}:`, error);
+      const errorMessage = `Error adding product ${data.id}:`;
+      results.push(errorMessage); 
+      // 或其他適當的錯誤處理方式 
+    } 
+  } return results; 
+}
+
+export const setAxiosConfigRef = (axiosConfigRef,pagesRef,type,headers)=>{
+  switch (type) {
+  case 'current':
+    axiosConfigRef.current = {
+      params: {
+        page: pagesRef.current.current_page,
+        category: pagesRef.current.category,
+      },
+      headers: headers,
+    };
+    break;
+  case 'downPage':
+    axiosConfigRef.current = {
+      params: {
+        page:
+            pagesRef.current.current_page < pagesRef.current.total_pages
+              ? pagesRef.current.current_page + 1
+              : pagesRef.current.total_pages,
+        category: pagesRef.category || "",
+      },
+      headers: headers, // 替換 headers
+    };
+    break;
+  case 'upPage':
+    axiosConfigRef.current = {
+      params: {
+        page: pagesRef.current.current_page - 1,
+        category: pagesRef.category || "",
+      },
+      headers: headers, // 替換 headers
+    };
+    break;
+  default:
+    axiosConfigRef.current = {
+      params: { page: 0, category: "" },
+      headers: { Authorization: "" },
+    };
+    break;
+  }
+};
+export const setPagesRef = (pagesRef,config)=>{
+  pagesRef.current = {
+    current_page: config.current_page || 0,
+    total_pages: config.total_pages || 0,
+    category: config.category || "",
+  };
+};
+
+export const modalStatus = (appModalRef,imgAlt, modalImg, toggleFooter) => {
+  appModalRef.current.setImgAlt(imgAlt);
+  appModalRef.current.setModalImage(modalImg);
+  appModalRef.current.toggleFooter(toggleFooter);
+  appModalRef.current.open();
+};

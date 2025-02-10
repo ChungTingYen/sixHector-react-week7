@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
 import { apiService } from "../apiService/apiService";
-import { useLoading } from "../component/LoadingContext";
 import { registerRules } from "../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
 
@@ -27,8 +26,9 @@ const Input = (props)=>{
   </>);
 };
 
-const CustomerInfo = () => {
-  const { setIsLoading, setReload, setToastContent } = useLoading();
+const CustomerInfo = (props) => {
+  // const { setIsLoading, setReload, setToastContent } = useLoading();
+  const { setIsLoading,setToastContent,setReload } = props;
   const {
     register,
     handleSubmit,
@@ -61,7 +61,7 @@ const CustomerInfo = () => {
         data: { total, orderId, success, message },
       } = await apiService.axiosPost(`/api/${APIPath}/order`, userInfo);
       reset();
-      setReload(true);
+      // setReload(true);
       setToastContent("執行完成", "success");
     } catch (error) {
       console.log(error);
@@ -69,6 +69,7 @@ const CustomerInfo = () => {
       setToastContent("執行失敗", "error");
     } finally {
       setIsLoading(false);
+      setReload(true);
     }
   };
   return (

@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { apiService } from "../apiService/apiService";
-import { useLoading } from "./LoadingContext";
+// import { useLoading } from "./LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 const Carts = (props) => {
-  const { cart, handleDeleteCart } = props;
-  const { setIsLoading, setReload, setToastContent } = useLoading();
+  const { cart, handleDeleteCart,setIsLoading,setReload,setToastContent } = props;
+  // const { setIsLoading, setReload, setToastContent } = useLoading();
   const handleIncreDecreProduct = async (cartId, type) => {
     setIsLoading(true);
     try {
@@ -16,10 +16,10 @@ const Carts = (props) => {
       };
       await apiService.axiosPut(`/api/${APIPath}/cart/${cartId}`, putData);
       setReload(true);
-      setToastContent("執行完成", "success");
+      setToastContent(`${type === '+' ? '增加商品數量完成' : '減少商品數量完成'}`, "success");
     } catch (error) {
       console.log(error);
-      setToastContent("執行失敗", "error");
+      setToastContent("數量變更失敗", "error");
       alert(error);
     } finally {
       setIsLoading(false);

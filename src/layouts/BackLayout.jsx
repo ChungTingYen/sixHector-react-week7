@@ -2,10 +2,8 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const routes = [
   { path: "/", name: "首頁" },
-  { path: "/products", name: "產品列表" },
-  { path: "/cart", name: "購物車" },
-  { path: "/customerInfo", name: "訂購者資料" },
-  { path: "/login", name: "登入後台" },
+  { path: "/products", name: "產品後台列表" },
+  { path: "/orders", name: "訂單列表" },
 ];
 
 export default function FrontLayout() {
