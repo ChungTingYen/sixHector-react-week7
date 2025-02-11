@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { apiService } from "../apiService/apiService";
+import { apiService } from "../../apiService/apiService";
 // import { useLoading } from "./LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 const Carts = (props) => {

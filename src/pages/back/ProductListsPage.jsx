@@ -1,9 +1,11 @@
 import { useEffect,useCallback,useState,useMemo,useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiServiceAdmin } from "../../apiService/apiService";
+import { ToastContext } from '../../component/back/ToastContext';
 import {
-  Products,ProductDetailModal,ProductEditModal,ProductDeleteModal,Pagination,AppFunction
+  Products,ProductEditModal,ProductDeleteModal,Pagination,AppFunction
 } from "../../component/back";
+import { ProductDetailModal } from "../../component/common";
 import * as utils from '../../utils/utils';
 import { tempProductDefaultValue } from '../../data/defaultValue';
 import { toastInfo } from "../../data/dataModel";
@@ -22,11 +24,16 @@ export default function ProductListsPage (){
   const [modalMode, setModalMode] = useState(null);
   const [isProductDeleteModalOpen, setIsProductDeleteModalOpen] = useState(false);
   const [isProductEditModalOpen, setIsProductEditModalOpen] = useState(false);
-  const [ProductDetailModalType,setProductDetailModalType] = useState('');
+  const [productDetailModalType,setProductDetailModalType] = useState('');
   const [isShowToast,setIsShowToast] = useState(false);
   const ProductDetailModalRef = useRef(null);
   const debouncedSearchTerm = useDebounce(category, 1000);
-
+  const toastContextValue = {
+    setIsShowToast,
+    isShowToast,
+    setProductDetailModalType,
+    productDetailModalType
+  };
   const filterData = useMemo(() => {
     return (
       [...productData]
@@ -35,8 +42,19 @@ export default function ProductListsPage (){
         .sort((a, b) => priceAscending && a.price - b.price)
     );
   }, [productData, search, priceAscending]);
+  useEffect(() => {
+    handleCheckLogin();
+  },[]);
+  useEffect(() => {
+    if(isLoging){
+      debouncedSearchTerm
+        ? getCategoryProducts(debouncedSearchTerm)
+        : handleGetProducts();
+    }
+  }, [debouncedSearchTerm,isLoging]);
   const handleCheckLogin = async () => {
-    setProductDetailModalType('loading');
+    console.log('handleCheckLogin');
+    setProductDetailModalType('checking');
     utils.modalStatus(ProductDetailModalRef,"", null, false);
     try {
       await apiServiceAdmin.axiosPost("/api/user/check",{});
@@ -49,14 +67,19 @@ export default function ProductListsPage (){
     }
   };
   const handleGetProducts = async () => {
-    setProductDetailModalType('loading');
-    utils.modalStatus(ProductDetailModalRef,"", null, false);
-    await getProductData();
-    ProductDetailModalRef.current.close();
+    // setProductDetailModalType('loadingData');
+    try {
+      utils.modalStatus(ProductDetailModalRef,"", null, false);
+      await getProductData();
+    } catch (error) {
+      console.log(error);
+    }finally{
+      ProductDetailModalRef.current.close();
+    }
   };
   const getProductData = useCallback(async (page = 1) => {
-    setProductDetailModalType('loadingData');
-    utils.modalStatus(ProductDetailModalRef,"", null, false);
+    // setProductDetailModalType('loadingData');
+    // utils.modalStatus(ProductDetailModalRef,"", null, false);
     try {
       const resProduct = await apiServiceAdmin.axiosGetProductDataByConfig(
         `/api/${APIPath}/admin/products`,
@@ -73,7 +96,7 @@ export default function ProductListsPage (){
       console.log(error);
       navigate('/login');
     } finally{
-      ProductDetailModalRef.current.close();
+      // ProductDetailModalRef.current.close();
     }
   },[setProductData,pageInfo,setPageInfo]);
   const handleDeleteModal = useCallback(
@@ -162,29 +185,12 @@ export default function ProductListsPage (){
     }
     ProductDetailModalRef.current.close();
   };
-  useEffect(() => {
-    handleCheckLogin();
-  },[]);
-
-  // useEffect(()=>{
-  //   if(isLoging){
-  //     getProductData();
-  //   }
-  // },[isLoging]);
-
-  useEffect(() => {
-    if(isLoging){
-      debouncedSearchTerm
-        ? getCategoryProducts(debouncedSearchTerm)
-        : handleGetProducts();
-    }
-  }, [debouncedSearchTerm,isLoging]);
 
   const handleSearchCategory = (e) => {
     setCategory(e.target.value);
   };
   const getCategoryProducts = async (query) => {
-    setProductDetailModalType('loading');
+    setProductDetailModalType('loadingData');
     utils.modalStatus(ProductDetailModalRef,"", null, false);
     try {
       const resProduct = await apiServiceAdmin.axiosGetProductDataByConfig(
@@ -248,7 +254,7 @@ export default function ProductListsPage (){
       </div>
       <div className="d-flex align-items-center mt-2">
         <div className="">
-            搜尋此頁商品名稱:
+            測試功能:搜尋此頁商品名稱:
           <input
             type="search"
             style={{ width: "100px" }}
@@ -275,7 +281,7 @@ export default function ProductListsPage (){
           />
         </div>
         <div className="me-2 mx-1 ms-5">
-            測試Desbounce for category:
+          測試功能:Desbounce for category:
           <input
             type="search"
             style={{ width: "200px" }}
@@ -334,29 +340,33 @@ export default function ProductListsPage (){
     ) : (
       <h1>沒有商品或商品載入中</h1>
     )}
-    <ProductDetailModal
-      ref={ProductDetailModalRef}
-      modalBodyText="訊息"
-      modalSize={{ width: "300px", height: "200px" }}
-      modalImgSize={{ width: "300px", height: "120px" }}
-      productDetailModalType={ProductDetailModalType}
-    />
-    <ProductEditModal
-      editProduct={editProduct}
-      setModalMode={setModalMode}
-      modalMode={modalMode}
-      getProductData={getProductData}
-      isProductEditModalOpen={isProductEditModalOpen}
-      setIsProductEditModalOpen={setIsProductEditModalOpen}
-    />
-    <ProductDeleteModal 
-      setModalMode={setModalMode}
-      modalMode={modalMode}
-      getProductData={getProductData}
-      isProductDeleteModalOpen={isProductDeleteModalOpen}
-      setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
-      editProduct={editProduct}
-      isShowToast={isShowToast} 
-      setIsShowToast={setIsShowToast}/>
+
+    <ToastContext.Provider value={toastContextValue}>
+      <ProductDetailModal
+        ref={ProductDetailModalRef}
+        modalBodyText="訊息"
+        modalSize={{ width: "300px", height: "200px" }}
+        modalImgSize={{ width: "300px", height: "120px" }}
+        // productDetailModalType={productDetailModalType}
+      />
+      <ProductEditModal
+        editProduct={editProduct}
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getProductData={getProductData}
+        isProductEditModalOpen={isProductEditModalOpen}
+        setIsProductEditModalOpen={setIsProductEditModalOpen}
+      />
+      <ProductDeleteModal 
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getProductData={getProductData}
+        isProductDeleteModalOpen={isProductDeleteModalOpen}
+        setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
+        editProduct={editProduct}
+        // isShowToast={isShowToast} 
+        // setIsShowToast={setIsShowToast}
+      />
+    </ToastContext.Provider>
   </>);
 }

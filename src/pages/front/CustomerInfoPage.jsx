@@ -1,8 +1,8 @@
 import { useState,useEffect } from "react";
-import { toastInfo } from "../data/dataModel";
-import { apiService } from "../apiService/apiService";
-import { LoadingOverlay,Toast,CustomerInfo,CustomerInfoWithNoCart } from "../component";
-
+import { toastInfo } from "../../data/dataModel";
+import { apiService } from "../../apiService/apiService";
+import { LoadingOverlay,CustomerInfo,CustomerInfoWithNoCart } from '../../component/front';
+import{ Toast } from '../../component/common';
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function CustomerInfoPage(){
   const [isLoading, setIsLoading] = useState(true);

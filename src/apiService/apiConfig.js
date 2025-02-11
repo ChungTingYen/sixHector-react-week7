@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { sweetalert } from "../utils/utils";
 const userBaseUrl = `${import.meta.env.VITE_BASE_URL}/v2`;
 const adminBaseUrl = `${import.meta.env.VITE_BASE_URL}/v2`;
 
@@ -50,9 +50,10 @@ adminInstance.interceptors.response.use(
       const { data, status } = error.response;
       const { message } = data;
       const errorMessage = message.message ? message.message : message;
-      message !== '請重新登入' && alert(`adminInstance.interceptors: ${status}: ${errorMessage}`);
+      message !== '請重新登入' && 
+      sweetalert(` ${status}: ${errorMessage}`, "", "warning", "確認");
     } else {
-      alert('adminInstance.interceptors: ', error);
+      sweetalert(error, "", "warning", "確認");
     }
     return Promise.reject(error);
   }

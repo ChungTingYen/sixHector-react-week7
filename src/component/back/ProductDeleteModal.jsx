@@ -3,8 +3,9 @@ import { useEffect, useRef,memo,useState  } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
 import * as utils from '../../utils/utils';
-import { ProductDetailModal,Toast } from '.';
+import { ProductDetailModal,Toast } from '../common';
 import { toastInfo } from '../../data/dataModel';
+import { useToast } from "./ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 const ProductDeleteModal = (props)=>{
   const {
@@ -14,10 +15,17 @@ const ProductDeleteModal = (props)=>{
     setIsProductDeleteModalOpen,
     getProductData,
   } = props;
-  const [ProductDetailModalType,setProductDetailModalType] = useState('');
+
   const deleteModalDivRef = useRef(null);
   const ProductDetailModalRef = useRef(null);
-  const [isShowToast,setIsShowToast] = useState(false);
+  const {
+    setIsShowToast,
+    isShowToast,
+    setProductDetailModalType,
+    productDetailModalType 
+  } = useToast();
+  // const [productDetailModalType,setProductDetailModalType] = useState('');
+  // const [isShowToast,setIsShowToast] = useState(false);
   useEffect(() => {
     if (deleteModalDivRef.current) {
       new Modal(deleteModalDivRef.current, { backdrop: false });
@@ -62,15 +70,16 @@ const ProductDeleteModal = (props)=>{
     <>
       <Toast toastText={toastInfo.toastText}
         type = {toastInfo.type}
-        isShowToast={isShowToast} 
-        setIsShowToast={setIsShowToast}/>
+        // isShowToast={isShowToast} 
+        // setIsShowToast={setIsShowToast}
+      />
     
       <ProductDetailModal
         ref={ProductDetailModalRef}
         modalBodyText="訊息"
         modalSize={{ width: "300px", height: "200px" }}
         modalImgSize={{ width: "300px", height: "120px" }}
-        productDetailModalType={ProductDetailModalType}
+        // productDetailModalType={productDetailModalType}
       />
       <div
         className="modal fade"

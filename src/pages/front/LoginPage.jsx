@@ -1,15 +1,14 @@
-import { useState, } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import { useLogin } from "../component/LoginContext";
-import { apiService } from "../apiService/apiService";
-import { sweetalert } from "../utils/utils";
+import { apiService,apiServiceAdmin } from "../../apiService/apiService";
+import { sweetalert,getHeadersFromCookie } from "../../utils/utils";
 const LoginPage = () => {
   const [account, setAccount] = useState({
     username: "",
     password: "",
   });
   const navigate = useNavigate();
-
   const changeInput = (e) => {
     setAccount({
       ...account,
@@ -24,26 +23,25 @@ const LoginPage = () => {
       if (res.data.success) {
         const { token, expired } = res.data;
         document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-        // alert(res.data.message);
         sweetalert(res.data.message, "", "success", "確認");
-        navigate('/admin/productsList');
+        navigate('/admin');
       }
     } catch (error) {
       console.log(error);
     }
   };
-  //   const handleCheckLogin = async () => {
-  //     try {
-  //       const result = await apiServiceAdmin.axiosPost("/api/user/check",{});
-  //       //   setIsLogin(true);
-  //       navigate('/admin/productsList');
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   useEffect(() => {
-  //     handleCheckLogin();
-  //   },[]);
+  const handleCheckLogin = async () => {
+    try {
+      await apiServiceAdmin.axiosPost("/api/user/check",{});
+      navigate('/admin/productsList');
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    if(getHeadersFromCookie().Authorization !== null)
+      handleCheckLogin();
+  },[]);
   return (
     <>
       <div className="d-flex flex-column justify-content-center align-items-center vh-100">

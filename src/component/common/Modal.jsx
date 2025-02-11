@@ -1,44 +1,29 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import React, {
+import  {
   useRef,
   useEffect,
   useImperativeHandle,
   forwardRef,
 } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Modal } from "bootstrap";
+import * as bootstrap from "bootstrap";
 
-const ProductDetailModal = forwardRef((props, ref) => {
-  const { modalBodyText, modalSize, modalImgSize,  productDetailModalType } = props;
-  const modalDivRef1 = useRef(null);
-  const modalRef1 = useRef(null);
+const Modal = forwardRef((props, ref) => {
+  const { modalBodyText, modalSize, modalImgSize } = props;
+  const modalDivRef = useRef(null);
+  const modalRef = useRef(null);
   const imageRef = useRef(null);
-  const getMessage = (productDetailModalType = null) => {
-    if(imageRef.current)
-      imageRef.current.style.display = "none";
-    switch(productDetailModalType) {
-    case 'loading':
-      return '進行中...';
-    case 'loadingData':
-      return '載入資料中...';
-    case 'creating':
-      return '建立中...';
-    case 'deleting':
-      return '刪除中...';
-    default:
-      return'.........';
-    }
-    
-  };
+
   useEffect(() => {
-    modalRef1.current = new Modal(modalDivRef1.current);
+    modalRef.current = new bootstrap.Modal(modalDivRef.current);
   }, []);
   const closeModal = () => {
-    modalRef1.current.hide();
+    modalRef.current.hide();
+    // restoreStyle();
   };
   const openModal = () => {
-    modalRef1.current.show();
+    modalRef.current.show();
   };
 
   useImperativeHandle(ref, () => {
@@ -47,7 +32,7 @@ const ProductDetailModal = forwardRef((props, ref) => {
       open() {
         openModal();
       },
-      close() {
+      close(){
         closeModal();
       },
       // close: closeModal,
@@ -58,27 +43,27 @@ const ProductDetailModal = forwardRef((props, ref) => {
       // },
       toggleFooter(visible) {
         if (visible) {
-          modalDivRef1.current.querySelector(".modal-footer").style.display =
+          modalDivRef.current.querySelector(".modal-footer").style.display =
             "block";
         } else {
-          modalDivRef1.current.querySelector(".modal-footer").style.display =
+          modalDivRef.current.querySelector(".modal-footer").style.display =
             "none";
         }
       },
       setModalImage(src) {
-        if (imageRef.current) {
-          imageRef.current.src = src;
-          // 直接修改圖像的 src 屬性
+        if (imageRef.current) { 
+          imageRef.current.src = src; 
+          // 直接修改圖像的 src 屬性 
         }
       },
-      setImgAlt(text) {
-        if (imageRef.current) {
-          imageRef.current.alt = text;
-          // 直接修改圖像的 alt 屬性
+      setImgAlt(text){
+        if (imageRef.current) { 
+          imageRef.current.alt = text; 
+          // 直接修改圖像的 alt 屬性 
         }
       },
-      //把modalDivRef1傳出去給父層控制
-      modalDivRef1,
+      //把modalDivRef傳出去給父層控制
+      modalDivRef,
     };
   });
   return (
@@ -86,14 +71,14 @@ const ProductDetailModal = forwardRef((props, ref) => {
       <div
         className="modal fade"
         id="myModal"
-        ref={modalDivRef1}
+        ref={modalDivRef}
         tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
-        style={{ zIndex: 1060 }}
       >
         <div
           className="modal-dialog"
+          // style={{ width: "600px", height: "600px" }}
           style={modalSize}
         >
           <div className="modal-content">
@@ -114,12 +99,10 @@ const ProductDetailModal = forwardRef((props, ref) => {
               style={modalImgSize}
               id="modalBody"
             >
-              {getMessage(productDetailModalType)}
               <img
                 // src={imageSrc}
                 ref={imageRef}
                 className="img-fluid"
-                // alt="進行中"
                 alt=''
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
                 id="picture"
@@ -141,4 +124,4 @@ const ProductDetailModal = forwardRef((props, ref) => {
     </>
   );
 });
-export default ProductDetailModal;
+export default Modal;

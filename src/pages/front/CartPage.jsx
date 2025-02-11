@@ -1,7 +1,8 @@
 import { useEffect, useState,useCallback } from "react";
-import { apiService } from "../apiService/apiService";
-import { toastInfo } from "../data/dataModel";
-import { Carts,LoadingOverlay, Toast } from "../component";
+import { apiService } from "../../apiService/apiService";
+import { toastInfo } from '../../data/dataModel';
+import { Carts,LoadingOverlay } from "../../component/front";
+import { Toast } from "../../component/common";
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function CartPage(){
   const [cart, setCart] = useState({});

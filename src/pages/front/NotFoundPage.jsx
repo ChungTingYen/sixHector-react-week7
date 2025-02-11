@@ -7,9 +7,11 @@ export default function NotFoundPage(){
       
       </div>
       <div className="container text-center text-white py-5 mt-5">
-        <Link to='/login' className="display-5 fw-bold">回到Login page</Link>
+        <Link to='/' className="display-5 fw-bold">回到首頁</Link>
       </div>
-     
+      <div className="container text-center text-white py-5 mt-5">
+        <Link to='/login' className="display-5 fw-bold">回到Login</Link>
+      </div>
     </>
   );
   

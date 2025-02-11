@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useForm } from "react-hook-form";
-import { apiService } from "../apiService/apiService";
-import { registerRules } from "../data/data";
+import { apiService } from "../../apiService/apiService";
+import { registerRules } from "../../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
 
 const Input = (props)=>{
@@ -74,6 +74,9 @@ const CustomerInfo = (props) => {
   };
   return (
     <div className="my-5 row justify-content-center">
+
+      <p className="fw-bold text-center display-6 text-primary mt-2">請輸入訂購人資料</p>
+     
       <form className="col-md-6" onSubmit={onSubmit}>
         <Input label='Email' id='email' name='email' type='email' placeholder="請輸入 Email" register={register} 
           rules={registerRules.email}
@@ -95,7 +98,7 @@ const CustomerInfo = (props) => {
             id="message"
             className="form-control"
             cols="30"
-            rows="10"
+            rows="5"
             {...register("message")}
           ></textarea>
         </div>

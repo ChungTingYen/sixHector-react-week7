@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Link } from "react-router-dom";
-import { apiService } from "../apiService/apiService";
+import { apiService } from "../../apiService/apiService";
+
 // import { useLoading } from "./LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 const Product = (props) => {
@@ -28,7 +29,7 @@ const Product = (props) => {
       setIsLoading(false);
     }
   };
-  return (
+  return (<>
     <tr>
       <td
         style={{
@@ -66,10 +67,16 @@ const Product = (props) => {
             查看更多(Modal)
           </button>
           <Link
-            to={`/products/${product.id}`}
+            to={`/product/${product.id}`}
             className="btn btn-outline-secondary"
           >
             查看更多(別頁)
+          </Link>
+          <Link
+            to={`/products/productBySide/${product.id}`}
+            className="btn btn-outline-secondary"
+          >
+            查看更多(右側)
           </Link>
           <button
             type="button"
@@ -81,6 +88,7 @@ const Product = (props) => {
         </div>
       </td>
     </tr>
+  </>
   );
 };
 export default Product;

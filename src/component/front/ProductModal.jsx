@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
-import { apiService } from "../apiService/apiService";
+import { apiService } from "../../apiService/apiService";
 import { Modal } from "bootstrap";
 // import { useLoading } from "../component/LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
@@ -37,10 +37,7 @@ const ProductModal = (props) => {
           qty: qtySelect,
         },
       };
-      const response = await apiService.axiosPost(
-        `/api/${APIPath}/cart`,
-        postData
-      );
+      await apiService.axiosPost(`/api/${APIPath}/cart`,postData);
       // setReload(true);
       // closeProductModal();
       setToastContent("執行完成", "success");
@@ -69,8 +66,8 @@ const ProductModal = (props) => {
         id="productModal"
         tabIndex="-1"
       >
-        <div className="modal-dialog modal-dialog-centered">
-          <div className="modal-content">
+        <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: "60%" }}>
+          <div className="modal-content " style={{ height: "100%" }}>
             <div className="modal-header">
               <h2 className="modal-title fs-5">
                 產品名稱：{tempProduct.title}
@@ -83,20 +80,47 @@ const ProductModal = (props) => {
               ></button>
             </div>
             <div className="modal-body">
-              <img
-                src={tempProduct.imageUrl}
-                alt={tempProduct.title}
-                className="img-fluid"
-              />
-              <p>內容：{tempProduct.content}</p>
-              <p>描述：{tempProduct.description}</p>
-              <p>
+              <div className="row">
+                <div className="col-8">
+                  <img
+                    src={tempProduct.imageUrl}
+                    alt={tempProduct.title}
+                    className="img-fluid"
+                  />
+                  <p>內容：{tempProduct.content}</p>
+                  <p>描述：{tempProduct.description}</p>
+                  <p>
                 價錢：<span className="text-danger">{tempProduct.price} </span>
-                <span>
-                  <del>{tempProduct.origin_price}</del> 元
-                </span>
-              </p>
-              <div className="input-group align-items-center">
+                    <span>
+                      <del>{tempProduct.origin_price}</del> 元
+                    </span>
+                  </p>
+                </div>
+                <div className="col-4">
+                  <h5 className="mt-3">更多圖片：</h5>
+                  <div className="d-flex flex-wrap">
+                    {/* {JSON.stringify(product.imagesUrl,null,2)} */}
+                    {tempProduct.imagesUrl && tempProduct.imagesUrl
+                      .filter((item) => item != "")
+                      .map((image, index) => (
+                        <img
+                          key={index}
+                          src={image}
+                          className="card-img-top primary-image me-2 mb-1"
+                          alt={`更多圖片${index}`}
+                          style={{
+                            width: "200px",
+                            height: "200px",
+                            objectFit: "cover",
+                            overflow:"hidden"
+                          }}
+                        // onClick={() => handleImageClick(image)}
+                        />
+                      ))}
+                  </div>
+                </div>
+              </div>
+              <div className="input-group align-items-center mt-2">
                 <label htmlFor="qtySelect">數量：</label>
                 <select
                   value={qtySelect}

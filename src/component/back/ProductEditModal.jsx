@@ -2,14 +2,12 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState,useRef,memo } from "react";
 import { Modal } from "bootstrap";
-
 import { apiServiceAdmin } from "../../apiService/apiService";
 import * as utils from "../../utils/utils";
 import { tempProductDefaultValue } from "../../data/defaultValue";
-import { ProductDetailModal } from '.';
-import { Toast } from ".";
+import { ProductDetailModal,Toast } from '../common';
 import { toastInfo } from '../../data/dataModel';
-
+import { useToast } from "./ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 
 const ProductModal = (props) => {
@@ -21,14 +19,16 @@ const ProductModal = (props) => {
     isProductEditModalOpen,
     setIsProductEditModalOpen,
   } = props;
-
+  const {
+    setIsShowToast,
+    setProductDetailModalType,
+} = useToast();
   const [modalproduct, setModalproduct] = useState(editProduct);
   const editModalDivRef = useRef(null);
   const uploadRef = useRef(null);
   const ProductDetailModalRef = useRef(null);
-  const [ProductDetailModalType,setProductDetailModalType] = useState(null);
-  const [isShowToast,setIsShowToast] = useState(false);
-
+  // const [ProductDetailModalType,setProductDetailModalType] = useState(null);
+  // const [isShowToast,setIsShowToast] = useState(false);
   useEffect(()=>{
     setModalproduct(editProduct);
   },[editProduct]);
@@ -457,13 +457,13 @@ const ProductModal = (props) => {
     modalBodyText="訊息"
     modalSize={{ width: "300px", height: "200px" }}
     modalImgSize={{ width: "300px", height: "120px" }}
-    productDetailModalType={ProductDetailModalType}
+    // productDetailModalType={productDetailModalType}
   />
-        <Toast toastText={toastInfo.toastText}
-        type = {toastInfo.type}
-        isShowToast={isShowToast} 
-        setIsShowToast={setIsShowToast}/>
-    
+    <Toast toastText={toastInfo.toastText}
+      type = {toastInfo.type}
+      // isShowToast={isShowToast} 
+      // setIsShowToast={setIsShowToast}
+      />
     </>
   );
 };

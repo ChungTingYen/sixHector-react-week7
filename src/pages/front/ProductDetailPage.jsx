@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { useParams } from "react-router-dom";
 import ReactLoading from "react-loading";
-import { apiService } from "../apiService/apiService";
-import { setToastContent } from "../utils/utils";
-import { toastInfo } from "../data/dataModel";
-import { Toast } from "../component";
+import { apiService } from "../../apiService/apiService";
+import { setToastContent } from "../../utils/utils";
+import { toastInfo } from "../../data/dataModel";
+import { Modal } from "../../component/common";
+import { Toast } from '../../component/common';
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function ProductDetailPage() {
   const { id: productId } = useParams();
@@ -12,7 +13,11 @@ export default function ProductDetailPage() {
   const [qtySelect, setQtySelect] = useState(1);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const [isShowToast,setIsShowToast] = useState(false);
-
+  const modalRef = useRef(null);
+  const handleImageClick = (imageSrc) => {
+    modalRef.current.setModalImage(imageSrc);
+    modalRef.current.open();
+  };
   const getProductById = async () => {
     // setIsLoading(true);
     try {
@@ -51,7 +56,7 @@ export default function ProductDetailPage() {
   }, []);
   return (
     <>
-      <div className="container mt-5">
+      <div className="container p-5">
         <div className="row">
           <div className="col-6">
             <img
@@ -71,7 +76,7 @@ export default function ProductDetailPage() {
             <div className="input-group align-items-center w-75">
               <select
                 value={qtySelect}
-                onChange={(e) => setQtySelect(e.target.value)}
+                onChange={(e) => setQtySelect(parseInt(e.target.value))}
                 id="qtySelect"
                 className="form-select"
               >
@@ -100,12 +105,39 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
+        <h5 className="mt-3">更多圖片：</h5>
+        <div className="d-flex flex-wrap">
+          {product.imagesUrl && product.imagesUrl
+            .filter((item) => item != "")
+            .map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                className="card-img-top primary-image me-2 mb-1"
+                alt={`更多圖片${index}`}
+                style={{
+                  width: "250px",
+                  height: "250px",
+                  objectFit: "cover",
+                  cursor: "pointer", // 這裡設置光標為手指圖樣
+                }}
+                onClick={() => handleImageClick(image)}
+              />
+            
+            ))}
+        </div>
       </div>
       <Toast
         toastText={toastInfo.toastText}
         type={toastInfo.type}
         isShowToast={isShowToast}
         setIsShowToast={setIsShowToast}
+      />
+      <Modal
+        ref={modalRef}
+        modalBodyText="商品放大圖"
+        modalSize={{ width: "600px", height: "600px" }}
+        modalImgSize={{ width: "500px", height: "500px" }}
       />
     </>
   );

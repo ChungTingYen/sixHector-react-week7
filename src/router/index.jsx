@@ -4,18 +4,21 @@ import BackLayout from "../layouts/BackLayout";
 import {
   HomePage,ProductsPage,ProductDetailPage,
   NotFoundPage,CartPage,CustomerInfoPage,
-  LoginPage ,ProductListsPage 
-} from "../pages";
-
+  LoginPage ,ProductDetailPageBySide
+} from "../pages/front";
+import{ ProductListsPage,AdminHomePage } from "../pages/back";
 const routes = [
   {
     path: "/",
     element: <FrontLayout />,
     children: [
       { path: "", element: <HomePage /> },
-      { path: "products", element: <ProductsPage /> },
       {
-        path: "products/:id",
+        path: "products", element: <ProductsPage />,
+        children:[{ path:'productBySide/:id',element:<ProductDetailPageBySide/> }]
+      },
+      {
+        path: "product/:id",
         element: <ProductDetailPage />
       },
       { path:'cart',element:<CartPage/> },
@@ -26,7 +29,10 @@ const routes = [
   {
     path:'admin',
     element:<BackLayout/>,
-    children:[{ path:'productsList',element:<ProductListsPage/> },]
+    children:[
+      { path:'',element:<AdminHomePage/> },
+      { path:'productsList',element:<ProductListsPage/> },
+    ]
   },
   {
     path: "*",
