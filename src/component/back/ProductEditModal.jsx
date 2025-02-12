@@ -96,7 +96,6 @@ const ProductModal = (props) => {
     } finally{
       ProductDetailModalRef.current.close();
     }
-    
   };
   const handleEditDataChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -323,7 +322,7 @@ const ProductModal = (props) => {
               <div className="col-12 ">
                 <div className="mb-3">
                   <label htmlFor="fileInput" className="form-label">
-                    主圖上傳{" "}
+                    主圖上傳
                   </label>
                   <input
                     type="file"

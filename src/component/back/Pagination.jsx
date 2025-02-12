@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { memo } from 'react';
 const Pagination = (props) => {
-  const { getProductData, pageInfo } = props;
+  const { getData, pageInfo } = props;
   const handlePageChange = (e,page) => {
     e.preventDefault();
-    getProductData(page);
+    getData(page);
   };
   return (
     <>

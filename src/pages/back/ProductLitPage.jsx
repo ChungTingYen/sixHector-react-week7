@@ -98,7 +98,7 @@ export default function ProductListsPage (){
     } finally{
       // ProductDetailModalRef.current.close();
     }
-  },[setProductData,pageInfo,setPageInfo]);
+  },[navigate,pageInfo]);
   const handleDeleteModal = useCallback(
     (productId) => {
       const updatedProduct =
@@ -335,7 +335,7 @@ export default function ProductListsPage (){
             </table>
           </div>
         </div>
-        <Pagination getProductData={getProductData} pageInfo={pageInfo} />
+        <Pagination getData={getProductData} pageInfo={pageInfo} />
       </>
     ) : (
       <h1>沒有商品或商品載入中</h1>

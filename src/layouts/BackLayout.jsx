@@ -2,8 +2,8 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const routes = [
   { path: "/admin", name: "後台首頁" },
-  { path: "/admin/productsList", name: "產品後台列表" },
-  { path: "/admin/orders", name: "訂單列表" },
+  { path: "/admin/productList", name: "產品後台列表" },
+  { path: "/admin/orderList", name: "訂單列表" },
   { path: "/", name: "前台首頁" },
 ];
 

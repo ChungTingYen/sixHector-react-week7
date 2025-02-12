@@ -6,7 +6,7 @@ import {
   NotFoundPage,CartPage,CustomerInfoPage,
   LoginPage ,ProductDetailPageBySide
 } from "../pages/front";
-import{ ProductListsPage,AdminHomePage } from "../pages/back";
+import{ ProductLitPage,AdminHomePage,OrderListPage } from "../pages/back";
 const routes = [
   {
     path: "/",
@@ -31,7 +31,8 @@ const routes = [
     element:<BackLayout/>,
     children:[
       { path:'',element:<AdminHomePage/> },
-      { path:'productsList',element:<ProductListsPage/> },
+      { path:'productList',element:<ProductLitPage/> },
+      { path:'orderList',element:<OrderListPage/> },
     ]
   },
   {
