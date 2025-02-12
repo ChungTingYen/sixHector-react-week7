@@ -33,7 +33,7 @@ const LoginPage = () => {
   const handleCheckLogin = async () => {
     try {
       await apiServiceAdmin.axiosPost("/api/user/check",{});
-      navigate('/admin/productsList');
+      navigate('/admin/productList');
     } catch (error) {
       console.log(error);
     }
