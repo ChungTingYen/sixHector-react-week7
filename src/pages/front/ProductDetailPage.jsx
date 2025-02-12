@@ -107,7 +107,7 @@ export default function ProductDetailPage() {
         </div>
         <h5 className="mt-3">更多圖片：</h5>
         <div className="d-flex flex-wrap">
-          {product.imagesUrl && product.imagesUrl
+          { product.imagesUrl && product.imagesUrl
             .filter((item) => item != "")
             .map((image, index) => (
               <img

@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigatePage } from '../../hook';
 // import { useLogin } from "../component/LoginContext";
 import { apiService,apiServiceAdmin } from "../../apiService/apiService";
 import { sweetalert,getHeadersFromCookie } from "../../utils/utils";
@@ -8,7 +8,7 @@ const LoginPage = () => {
     username: "",
     password: "",
   });
-  const navigate = useNavigate();
+  const navigate = useNavigatePage();
   const changeInput = (e) => {
     setAccount({
       ...account,

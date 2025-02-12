@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+
 import { useEffect,useState } from 'react';
+import { useNavigatePage } from '../../hook';
 export default function CustomerInfoWithNoCart(){
-  const navigate = useNavigate();
+  const navigate = useNavigatePage();
   const [time,setTime] = useState(5);
   useEffect(() => {
     const interval = setInterval(() => {

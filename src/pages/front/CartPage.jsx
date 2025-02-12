@@ -1,5 +1,4 @@
 import { useEffect, useState,useCallback } from "react";
-import { useNavigate } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 import { toastInfo } from '../../data/dataModel';
 import { Carts,LoadingOverlay } from "../../component/front";

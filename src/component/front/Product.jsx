@@ -103,7 +103,7 @@ const Product = (props) => {
             to={`/product/${product.id}`}
             className="btn btn-outline-secondary"
           >
-            查看更多(別頁)
+            查看更多(轉頁)
           </Link>
           <Link
             to={`/products/productBySide/${product.id}`}
