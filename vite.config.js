@@ -7,5 +7,14 @@ export default defineConfig({
   server: {
     port: 3000,
   },
-  base:process.env.NODE_env === 'production' ? '/sixHector-react-week6/' : ''
+  base:process.env.NODE_env === 'production' ? '/sixHector-react-week6/' : '',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom']
+        }
+      }
+    }
+  }
 });
