@@ -58,7 +58,40 @@ const Product = (props) => {
         <div className="h5 text-danger">特價 {product.price} 元</div>
       </td>
       <td>
-        <div className="btn-group btn-group-sm">
+        {/* <div className="btn-group btn-group-sm">
+          <button
+            onClick={atHandleSeeMore}
+            type="button"
+            className="btn btn-outline-secondary"
+          >
+            查看更多(Modal)
+          </button>
+          <Link
+            to={`/product/${product.id}`}
+            className="btn btn-outline-secondary"
+          >
+            查看更多(別頁)
+          </Link>
+          <Link
+            to={`/products/productBySide/${product.id}`}
+            className="btn btn-outline-secondary"
+          >
+            查看更多(右側)
+          </Link>
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={handleAddProductToCart}
+          >
+            加到購物車
+          </button>
+        </div> */}
+      </td>
+    </tr>
+    <tr>
+      <td colSpan="3">
+        <span><b>功能</b></span>
+        <div className="btn-group btn-group-sm d-flex">
           <button
             onClick={atHandleSeeMore}
             type="button"

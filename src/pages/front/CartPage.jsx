@@ -1,8 +1,10 @@
 import { useEffect, useState,useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 import { toastInfo } from '../../data/dataModel';
 import { Carts,LoadingOverlay } from "../../component/front";
 import { Toast } from "../../component/common";
+import { useNavigatePage } from '../../hook';
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function CartPage(){
   const [cart, setCart] = useState({});
@@ -14,6 +16,7 @@ export default function CartPage(){
     toastInfo.toastText = toastText;
     toastInfo.type = type;
   };
+  const navigate = useNavigatePage();
   const handleDeleteCart = useCallback(async (cartId = null) => {
     //如果有cardId就是刪除一個，沒有就是刪除全部
     const path = `api/${APIPath}/cart` + (cartId ? `/${cartId}` : "s");
@@ -42,6 +45,7 @@ export default function CartPage(){
       setIsLoading(false);
     }
   };
+
   useEffect(()=>{
     if(reload){
       getCart();
@@ -76,19 +80,8 @@ export default function CartPage(){
           </tbody>
           <tfoot>
             <tr>
-              <td style={{ width: "150px" }}>
-                {cart.carts?.length > 0 ? (
-                  <button
-                    className="btn btn-danger"
-                    disabled={cart.carts?.length <= 0}
-                    style={{ width: "80%" }}
-                    onClick={() => handleDeleteCart(null)}
-                  >
-                    刪除購物車
-                  </button>
-                ) : (
-                  <span className="text-start">購物車沒有商品</span>
-                )}
+              <td>
+                
               </td>
               <td colSpan="6" className="text-end">
                   總計：{cart.total}
@@ -96,6 +89,26 @@ export default function CartPage(){
             </tr>
           </tfoot>
         </table>
+        {cart.carts?.length > 0 ? (
+          <>
+            <div className="row" style={{ display: "flex", gap: "10px" }}>
+              <button
+                className="btn btn-danger"
+                disabled={cart.carts?.length <= 0}
+                style={{ width: "20%" }}
+                onClick={() => handleDeleteCart(null)}
+              >
+                刪除購物車
+              </button>
+              <button className="btn btn-primary" style={{ width: "20%" }}
+                onClick={()=>navigate('/customerInfo')}>
+                填寫訂單資料
+              </button>
+            </div>
+          </>
+        ) : (
+          <span className="text-start">購物車沒有商品</span>
+        )}
       </div>
       {isLoading && <LoadingOverlay />}
       <Toast
