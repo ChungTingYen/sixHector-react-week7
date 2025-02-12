@@ -1,182 +1,25 @@
-/* eslint-disable indent */
-/* eslint-disable react/prop-types */
-import { useEffect, useState, useRef, memo } from "react";
-import { Modal } from "bootstrap";
-import { apiServiceAdmin } from "../../apiService/apiService";
-import * as utils from "../../utils/utils";
-import { tempProductDefaultValue } from "../../data/defaultValue";
-import { ProductDetailModal, Toast } from "../common";
-import { toastInfo } from "../../data/dataModel";
-import { useToast } from "./ToastContext";
-const APIPath = import.meta.env.VITE_API_PATH;
+import { useRef } from "react";
 
-const ProductEditModal = (props) => {
-  const {
-    editProduct,
-    setModalMode,
-    modalMode,
-    getProductData,
-    isProductEditModalOpen,
-    setIsProductEditModalOpen,
-  } = props;
-  const { setIsShowToast, setProductDetailModalType } = useToast();
-  const [modalProduct, setModalProduct] = useState(editProduct);
-  const editModalDivRef = useRef(null);
-  const uploadRef = useRef(null);
-  const ProductDetailModalRef = useRef(null);
-  // const [ProductDetailModalType,setProductDetailModalType] = useState(null);
-  // const [isShowToast,setIsShowToast] = useState(false);
-  useEffect(() => {
-    setModalProduct(editProduct);
-  }, [editProduct]);
-  useEffect(() => {
-    if (editModalDivRef.current) {
-      new Modal(editModalDivRef.current, { backdrop: false });
-    }
-  }, []);
-  useEffect(() => {
-    if (isProductEditModalOpen) openEditModal();
-  }, [isProductEditModalOpen]);
-
-  const handleRemoveImage = () => {
-    const newImageUrl = [...modalProduct.imagesUrl];
-    newImageUrl.pop();
-    setModalProduct((prev) => ({ ...prev, imagesUrl: newImageUrl }));
-  };
-  const handleAddImage = () => {
-    const newImageUrl = [...modalProduct.imagesUrl];
-    newImageUrl.push("");
-    setModalProduct((prev) => ({ ...prev, imagesUrl: newImageUrl }));
-  };
-  const handleImgToMaster = (e, imgsIndex) => {
-    const temp = modalProduct.imagesUrl.map((item, index) =>
-      index === imgsIndex ? modalProduct.imageUrl : item
-    );
-    const tt = { ...modalProduct, imagesUrl: temp, imageUrl: e.target.src };
-    setModalProduct(tt);
-  };
-  const handleImgsUrlChange = (e, index) => {
-    const { value } = e.target;
-    const newImageUrl = [...modalProduct.imagesUrl];
-    newImageUrl[index] = value;
-    setModalProduct((prev) => ({ ...prev, imagesUrl: newImageUrl }));
-  };
-
-  const closeEditModal = () => {
-    setModalMode(null);
-    setModalProduct(tempProductDefaultValue);
-    uploadRef.current.value = "";
-    const modalInstance = Modal.getInstance(editModalDivRef.current);
-    modalInstance.hide();
-    setIsProductEditModalOpen(false);
-  };
-  const openEditModal = () => {
-    const modalInstance = Modal.getInstance(editModalDivRef.current);
-    modalInstance.show();
-  };
-  const handleImgUpload = async (e) => {
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "進行中", null, false);
-    try {
-      const formData = new FormData();
-      formData.append("file-to-upload", e.target.files[0]);
-      const result = await apiServiceAdmin.axiosPostImg(
-        `/api/${APIPath}/admin/upload`,
-        formData
-      );
-      result?.data?.success &&
-        setModalProduct({ ...modalProduct, imageUrl: result.data.imageUrl });
-    } catch (error) {
-      // alert("上傳主圖錯誤:" + error);
-      console.log(error);
-    } finally {
-      ProductDetailModalRef.current.close();
-    }
-  };
-  const handleEditDataChange = (e) => {
-    const { name, type, value, checked } = e.target;
-    let tempValue;
-    if (type === "number") tempValue = Number(value);
-    else if (type === "checkbox") tempValue = checked;
-    else tempValue = value;
-    const temp = {
-      ...modalProduct,
-      [name]: tempValue,
-    };
-    setModalProduct(temp);
-  };
-  const implementEditProduct = async (type, modalProduct) => {
-    try {
-      const wrapData = {
-        data: {
-          ...modalProduct,
-          is_enabled: modalProduct.is_enabled ? 1 : 0,
-          //price,original_price在取得輸入資料時handleEditDataChange已處理過
-        },
-      };
-      let path = "";
-      switch (type) {
-        case "create":
-          path = `/api/${APIPath}/admin/product`;
-          await apiServiceAdmin.axiosPostAddProduct(path, wrapData);
-          break;
-        case "edit":
-          path = `/api/${APIPath}/admin/product/${modalProduct.id}`;
-          await apiServiceAdmin.axiosPutProduct(path, wrapData);
-          break;
-        default:
-          break;
-      }
-      return true;
-    } catch (error) {
-      console.log(error);
-      return false;
-    }
-  };
-  const handleUpdateProduct = async () => {
-    if (!modalProduct.id && modalMode === "edit") {
-      alert("未取得product ID");
-      return;
-    }
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "進行中", null, false);
-    try {
-      const result = await implementEditProduct(modalMode, modalProduct);
-      if (result) {
-        closeEditModal();
-        getProductData();
-        setModalProduct(tempProductDefaultValue);
-        uploadRef.current.value = "";
-        setIsShowToast(true);
-        toastInfo.type = "success";
-        toastInfo.toastText = modalMode === "create" ? "新增完成" : "更新完成";
-      } else {
-        alert(modalMode === "create" ? "新增失敗:" : "更新失敗:");
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      ProductDetailModalRef.current.close();
-    }
-  };
+function ProductModal() {
+  const OrderModalDivRef = useRef();
   return (
     <>
       <div
         id="productModal"
         className="modal fade"
         style={{ backgroundColor: "rgba(0,0,0,0.5)", zIndex: 1050 }}
-        ref={editModalDivRef}
+        ref={OrderModalDivRef}
       >
         <div className="modal-dialog modal-dialog-centered modal-xl">
           <div className="modal-content border-0 shadow">
             <div className="modal-header border-bottom">
-              <h5 className="modal-title fs-4">{modalProduct.title}</h5>
+              <h5 className="modal-title fs-4"></h5>
               <button
                 type="button"
                 className="btn-close"
                 aria-label="Close"
-                onClick={closeEditModal}
-                // data-bs-dismiss="modal"
+                // onClick={closeEditModal}
+                data-bs-dismiss="modal"
               ></button>
             </div>
             <div className="modal-body p-4">
@@ -192,7 +35,7 @@ const ProductEditModal = (props) => {
                       type="text"
                       className="form-control"
                       placeholder="請輸入標題"
-                      value={modalProduct.title}
+                      value={modalproduct.title}
                       onChange={handleEditDataChange}
                     />
                   </div>
@@ -206,7 +49,7 @@ const ProductEditModal = (props) => {
                       type="text"
                       className="form-control"
                       placeholder="請輸入分類"
-                      value={modalProduct.category}
+                      value={modalproduct.category}
                       onChange={handleEditDataChange}
                     />
                   </div>
@@ -220,7 +63,7 @@ const ProductEditModal = (props) => {
                       type="text"
                       className="form-control"
                       placeholder="請輸入單位"
-                      value={modalProduct.unit}
+                      value={modalproduct.unit}
                       onChange={handleEditDataChange}
                     />
                   </div>
@@ -236,7 +79,7 @@ const ProductEditModal = (props) => {
                         className="form-control"
                         placeholder="請輸入原價"
                         min={0}
-                        value={modalProduct.origin_price}
+                        value={modalproduct.origin_price}
                         onChange={handleEditDataChange}
                       />
                     </div>
@@ -251,7 +94,7 @@ const ProductEditModal = (props) => {
                         className="form-control"
                         placeholder="請輸入售價"
                         min={0}
-                        value={modalProduct.price}
+                        value={modalproduct.price}
                         onChange={handleEditDataChange}
                       />
                     </div>
@@ -266,7 +109,7 @@ const ProductEditModal = (props) => {
                       className="form-control"
                       rows={4}
                       placeholder="請輸入產品描述"
-                      value={modalProduct.description}
+                      value={modalproduct.description}
                       onChange={handleEditDataChange}
                     ></textarea>
                   </div>
@@ -280,7 +123,7 @@ const ProductEditModal = (props) => {
                       className="form-control"
                       rows={4}
                       placeholder="請輸入說明內容"
-                      value={modalProduct.content}
+                      value={modalproduct.content}
                       onChange={handleEditDataChange}
                     ></textarea>
                   </div>
@@ -290,7 +133,7 @@ const ProductEditModal = (props) => {
                       type="checkbox"
                       className="form-check-input"
                       id="isEnabled"
-                      checked={modalProduct.is_enabled}
+                      checked={modalproduct.is_enabled}
                       onChange={handleEditDataChange}
                     />
                     <label className="form-check-label" htmlFor="isEnabled">
@@ -306,14 +149,14 @@ const ProductEditModal = (props) => {
                       className="form-control"
                       placeholder="請輸入購買人數"
                       min={0}
-                      value={modalProduct.buyerNumber}
+                      value={modalproduct.buyerNumber}
                       onChange={handleEditDataChange}
                     />
                   </div>
                 </div>
               </div>
             </div>
-            <div className="modal-body p-4">
+            {/* <div className="modal-body p-4">
               <div className="row g-4">
                 <div className="col-12 ">
                   <div className="mb-3">
@@ -339,15 +182,15 @@ const ProductEditModal = (props) => {
                       id="primary-image"
                       className="form-control"
                       placeholder="請輸入圖片連結"
-                      value={modalProduct.imageUrl}
+                      value={modalproduct.imageUrl}
                       onChange={handleEditDataChange}
                     />
                   </div>
-                  {modalProduct.imageUrl && (
+                  {modalproduct.imageUrl && (
                     <div style={{ width: "100%", height: "500px" }}>
                       <img
-                        src={modalProduct.imageUrl}
-                        alt={modalProduct.title}
+                        src={modalproduct.imageUrl}
+                        alt={modalproduct.title}
                         className="img-fluid"
                         style={{
                           width: "100%",
@@ -359,7 +202,7 @@ const ProductEditModal = (props) => {
                   )}
                 </div>
                 <hr />
-                {modalProduct.imagesUrl.map((image, index) => (
+                {modalproduct.imagesUrl.map((image, index) => (
                   <div key={index} className="col-md-6 mb-1">
                     <label
                       htmlFor={`imagesUrl-${index + 1}`}
@@ -399,15 +242,15 @@ const ProductEditModal = (props) => {
                         />
                       )}
                     </div>
-                    {modalProduct.imagesUrl.length > 2 && <hr />}
+                    {modalproduct.imagesUrl.length > 2 && <hr />}
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="d-flex justify-content-end">
+            </div> */}
+            {/* <div className="d-flex justify-content-end">
               <div className="btn-group w-100">
-                {modalProduct.imagesUrl.length < 5 &&
-                  modalProduct.imagesUrl[modalProduct.imagesUrl.length - 1] !==
+                {modalproduct.imagesUrl.length < 5 &&
+                  modalproduct.imagesUrl[modalproduct.imagesUrl.length - 1] !==
                     "" && (
                     <button
                       className="btn btn-outline-primary btn-sm w-50"
@@ -416,7 +259,7 @@ const ProductEditModal = (props) => {
                       新增圖片
                     </button>
                   )}
-                {modalProduct.imagesUrl.length > 1 && (
+                {modalproduct.imagesUrl.length > 1 && (
                   <button
                     className="btn btn-outline-danger btn-sm w-50"
                     onClick={(e) => handleRemoveImage(e.target.value)}
@@ -425,42 +268,30 @@ const ProductEditModal = (props) => {
                   </button>
                 )}
               </div>
-            </div>
+            </div> 
             <div className="modal-footer border-top bg-light">
               <button
                 type="button"
                 className="btn btn-secondary"
                 aria-label="Close"
-                onClick={closeEditModal}
+                // onClick={closeEditModal}
               >
                 取消
               </button>
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={handleUpdateProduct}
+                // onClick={handleUpdateProduct}
               >
                 確認
               </button>
             </div>
+            */}
           </div>
         </div>
       </div>
-      <ProductDetailModal
-        ref={ProductDetailModalRef}
-        modalBodyText="訊息"
-        modalSize={{ width: "300px", height: "200px" }}
-        modalImgSize={{ width: "300px", height: "120px" }}
-        // productDetailModalType={productDetailModalType}
-      />
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        // isShowToast={isShowToast}
-        // setIsShowToast={setIsShowToast}
-      />
     </>
   );
-};
+}
 
-export default memo(ProductEditModal);
+export default ProductModal;

@@ -18,7 +18,7 @@ export default function FrontLayout() {
         <div className="container">
           <ul className="navbar-nav flex-row gap-5 fs-5">
             {routes.map((route) => (
-              <li key={route.path} className="nav-item">
+              <li key={route.path}>
                 <NavLink
                   className="nav-link"
                   aria-current="page"
