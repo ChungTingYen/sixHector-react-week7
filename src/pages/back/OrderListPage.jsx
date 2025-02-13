@@ -19,7 +19,7 @@ export default function OrderListPage() {
           },
         }
       );
-      console.log(resOrder.data);
+      // console.log(resOrder.data);
       setOrderData(resOrder.data.orders);
       setPageInfo(resOrder.data.pagination);
     } catch (error) {
@@ -40,8 +40,8 @@ export default function OrderListPage() {
         setEditProduct(
           () => orderData.find((order) => order.id === orderId) ?? {}
         );
+        console.log('orderData=',orderData.find((order) => order.id === orderId));
         setModalMode(mode);
-
         // const { imagesUrl = [], ...rest } =
         //   orderData.find((order) => order.id === orderId) ?? {};
         // const updatedProduct = {
@@ -70,7 +70,7 @@ export default function OrderListPage() {
                 <thead>
                   <tr>
                     <th className="col-1">index</th>
-                    <th className="col-1">id</th>
+                    <th className="col-1">訂單id</th>
                     <th className="col-1">付款</th>
                     <th className="col-1">金額</th>
                     <th className="col-1">功能</th>
@@ -89,45 +89,6 @@ export default function OrderListPage() {
                       />
                     );
                   })}
-                  {/* {orderData.map((order) => {
-                    return (
-                      <tr id={order.id} key={order.id}>
-                        <th>{order.id}</th>
-                        <td>
-                          <span
-                            className={
-                              !order.is_paid ? "text-danger fw-bold fs-4" : ""
-                            }
-                          >
-                            {order.is_paid ? "已付款" : "未付款"}
-                          </span>
-                        </td>
-                        <td>{order.total}</td>
-                        <td>
-                          <button
-                            type="button"
-                            className="btn btn-warning mx-1"
-                            onClick={atOpenOrderMOdal}
-                          >
-                            詳細
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })} */}
-                  {/* {filterData.map((product, index) => {
-                  return (
-                    <Products
-                      key={product.id}
-                      {...product}
-                      index={index}
-                      handleDeleteModal={handleDeleteModal}
-                      handleOpenEditModalWithValue={
-                        handleOpenEditModalWithValue
-                      }
-                    />
-                  );
-                })} */}
                 </tbody>
               </table>
             </div>

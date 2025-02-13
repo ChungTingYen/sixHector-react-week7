@@ -87,7 +87,6 @@ const ProductEditModal = (props) => {
       result?.data?.success &&
         setModalProduct({ ...modalProduct, imageUrl: result.data.imageUrl });
     } catch (error) {
-      // alert("上傳主圖錯誤:" + error);
       console.log(error);
     } finally {
       ProductDetailModalRef.current.close();
