@@ -8,8 +8,6 @@ function OrderEditModal(props) {
   const {
     editProduct,
     setModalMode,
-    modalMode,
-    getOrderData,
     isModalOpen,
     setIsModalOpen,
   } = props;
@@ -79,7 +77,8 @@ function OrderEditModal(props) {
                           <Fragment key={key}>
                             <span className="text-primary" >訂購商品{index + 1}:</span>
                             <ul className="list-group" >
-                              <li>Product ID: {key}</li>
+                              <li>Order product list ID: {key}</li>
+                              <li>Product product ID: {value.product.id}</li>
                               <li>Product Title: {value.product.title}</li>
                               <li>Product Category: {value.product.category}</li>
                               <li>Product qty: {value.qty}</li>

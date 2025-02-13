@@ -3,9 +3,16 @@ import { memo } from "react";
 // import Modal from "./Modal";
 
 const Orders = (props) => {
-  const { index, id, total, is_paid, handleOpenOrderModalWithValue } = props;
+  const { index, id, total, is_paid, handleOpenOrderModalWithValue,handleDeleteModal } = props;
   const atOpenOrderMOdal = () => {
-    handleOpenOrderModalWithValue("edit", id);
+    handleOpenOrderModalWithValue("view", id);
+  };
+  const atOpenOrderDeleteMOdal = () => {
+    // handleOpenOrderModalWithValue("edit", id);
+    handleDeleteModal(id);
+  };
+  const atOpenOrderEditMOdal = ()=>{
+    handleOpenOrderModalWithValue('edit',id);
   };
   return (
     <>
@@ -19,13 +26,29 @@ const Orders = (props) => {
         </td>
         <td>{total}</td>
         <td>
-          <button
-            type="button"
-            className="btn btn-warning mx-1"
-            onClick={atOpenOrderMOdal}
-          >
+          <div className="d-flex">
+            <button
+              type="button"
+              className="btn btn-warning mx-1"
+              onClick={atOpenOrderMOdal}
+            >
             詳細
-          </button>
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger mx-1"
+              onClick={atOpenOrderDeleteMOdal}
+            >
+            刪除
+            </button>
+            <button
+              type="button"
+              className="btn btn-danger mx-1"
+              onClick={atOpenOrderEditMOdal}
+            >
+            編輯
+            </button>
+          </div>
         </td>
       </tr>
     </>

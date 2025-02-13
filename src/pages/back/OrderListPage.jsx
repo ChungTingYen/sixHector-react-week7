@@ -1,6 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect,useRef } from "react";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import { Pagination, Orders, OrderEditModal } from "../../component/back";
+import {
+  Pagination, Orders, OrderEditModal,OrderEditModal2,
+  ProductDetailModal,OrderDeleteModal 
+} from "../../component/back";
+import * as utils from "../../utils/utils";
+import { ToastContext } from "../../component/back/ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function OrderListPage() {
   const [orderData, setOrderData] = useState([]);
@@ -8,8 +13,19 @@ export default function OrderListPage() {
   const [editProduct, setEditProduct] = useState({});
   const [modalMode, setModalMode] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [productDetailModalType, setProductDetailModalType] = useState("");
+  const ProductDetailModalRef = useRef(null);
+  const [isProductDeleteModalOpen,setIsProductDeleteModalOpen] = useState(false);
+  const [isShowToast, setIsShowToast] = useState(false);
+  const toastContextValue = {
+    setIsShowToast,
+    isShowToast,
+    setProductDetailModalType,
+    productDetailModalType,
+  };
   const getOrderData = useCallback(async (page = 1) => {
+    setProductDetailModalType("checking");
+    utils.modalStatus(ProductDetailModalRef, "", null, false);
     try {
       const resOrder = await apiServiceAdmin.axiosGetProductDataByConfig(
         `/api/${APIPath}/admin/orders`,
@@ -26,31 +42,58 @@ export default function OrderListPage() {
       console.log(error);
       // navigate('/login');
     } finally {
-      // ProductDetailModalRef.current.close();
+      ProductDetailModalRef.current.close();
     }
   }, []);
-
+  const handleDeleteModal = useCallback(
+    (orderId) => {
+      console.log('delete orderId=',orderId);
+      const updatedOrder =
+      orderData.find((order) => order.id === orderId) ?? {};
+      setEditProduct(updatedOrder);
+      setIsProductDeleteModalOpen(true);
+    },
+    [orderData]
+  );
   const handleOpenOrderModalWithValue = useCallback(
     (mode, orderId = null) => {
-      if (mode === "create") {
-        // setEditProduct(tempProductDefaultValue);
-        // setModalMode(mode);
-      } else if (orderId && mode === "edit") {
+      if (mode === "edit") {
+     
+        console.log('edit=',orderData.find((order) => order.id === orderId) ?? {});
+      
+        let temp = orderData.find((order) => order.id === orderId);
+        let products = temp.products;
+        const filteredProducts = Object.keys(products).reduce((acc, key) => {
+          const { id, product_id, qty } = products[key];
+          acc[key] = { id, product_id, qty };
+          return acc;
+        }, {});
+        console.log('filteredProducts=',filteredProducts);
+        let tempx = {
+          data: {
+            create_at: temp.create_at,
+            is_paid: temp.is_paid,
+            message: temp.message,
+            products: filteredProducts,
+            user: {
+              address: temp.user.address,
+              email: temp.user.email,
+              name: temp.user.name,
+              tel: temp.user.tel
+            },
+            num: temp.num
+          },
+        };
+        setEditProduct(tempx);
+        setModalMode(mode);
+        console.log('tempx=',tempx);
+      } else if (orderId && mode === "view") {
         console.log("orderId=", orderId);
         setEditProduct(
           () => orderData.find((order) => order.id === orderId) ?? {}
         );
         console.log('orderData=',orderData.find((order) => order.id === orderId));
         setModalMode(mode);
-        // const { imagesUrl = [], ...rest } =
-        //   orderData.find((order) => order.id === orderId) ?? {};
-        // const updatedProduct = {
-        //   ...rest,
-        //   imagesUrl: imagesUrl.filter(Boolean),
-        // };
-        //imagesUrl.filter(Boolean) 是用來過濾掉 imagesUrl 數組中所有虛值的簡潔語法
-        // （如 null、undefined、0、false、NaN 或空字符串）。
-        // setEditProduct(updatedProduct);
       }
       setIsModalOpen(true);
     },
@@ -86,6 +129,7 @@ export default function OrderListPage() {
                         handleOpenOrderModalWithValue={
                           handleOpenOrderModalWithValue
                         }
+                        handleDeleteModal={handleDeleteModal}
                       />
                     );
                   })}
@@ -98,7 +142,15 @@ export default function OrderListPage() {
       ) : (
         <h1>沒有訂單或訂單載入中</h1>
       )}
-      <OrderEditModal
+      {/* <OrderEditModal
+        editProduct={editProduct}
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getData={getOrderData}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      /> */}
+      <OrderEditModal2
         editProduct={editProduct}
         setModalMode={setModalMode}
         modalMode={modalMode}
@@ -106,6 +158,25 @@ export default function OrderListPage() {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
+
+      <ToastContext.Provider value={toastContextValue}>
+        <ProductDetailModal
+          ref={ProductDetailModalRef}
+          modalBodyText="訊息"
+          modalSize={{ width: "300px", height: "200px" }}
+          modalImgSize={{ width: "300px", height: "120px" }}
+        />
+        <OrderDeleteModal
+          setModalMode={setModalMode}
+          modalMode={modalMode}
+          getData={getOrderData}
+          isProductDeleteModalOpen={isProductDeleteModalOpen}
+          setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
+          editProduct={editProduct}
+        // isShowToast={isShowToast}
+        // setIsShowToast={setIsShowToast}
+        />
+      </ToastContext.Provider>
     </>
   );
 }

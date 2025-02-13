@@ -40,8 +40,8 @@ export default [
       'indent': ['error', 2], // 強制使用2個空格的縮進
       'no-var': 'error', 
       'no-multiple-empty-lines': ['error', { 'max': 1 }], 
-      'prefer-const': 'error',
-	        'object-curly-spacing': ['error', 'always'], // 強制使用{}需要空格
+      // 'prefer-const': 'error',
+	    'object-curly-spacing': ['error', 'always'], // 強制使用{}需要空格
       'space-infix-ops': ['error', { 'int32Hint': false }],
       'brace-style': ['error', '1tbs', { 'allowSingleLine': false }], 
       'object-curly-newline': ['error', { 'multiline': true, 'consistent': true }]
