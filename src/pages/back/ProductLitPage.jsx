@@ -58,7 +58,6 @@ export default function ProductListsPage() {
     }
   }, [debouncedSearchTerm, isLoging]);
   const handleCheckLogin = async () => {
-    console.log("handleCheckLogin");
     setProductDetailModalType("checking");
     utils.modalStatus(ProductDetailModalRef, "", null, false);
     try {
@@ -72,7 +71,6 @@ export default function ProductListsPage() {
     }
   };
   const handleGetProducts = async () => {
-    // setProductDetailModalType('loadingData');
     try {
       utils.modalStatus(ProductDetailModalRef, "", null, false);
       await getProductData();
@@ -84,8 +82,6 @@ export default function ProductListsPage() {
   };
   const getProductData = useCallback(
     async (page = 1) => {
-      // setProductDetailModalType('loadingData');
-      // utils.modalStatus(ProductDetailModalRef,"", null, false);
       try {
         const resProduct = await apiServiceAdmin.axiosGetProductDataByConfig(
           `/api/${APIPath}/admin/products`,

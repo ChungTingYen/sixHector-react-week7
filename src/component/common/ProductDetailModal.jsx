@@ -1,42 +1,42 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/display-name */
-import React, {
+import {
   useRef,
   useEffect,
   useImperativeHandle,
   forwardRef,
+  memo,
 } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal } from "bootstrap";
-import { useToast } from '../../component/back/ToastContext';
+import { useToast } from "../../component/back/ToastContext";
 
 const ProductDetailModal = forwardRef((props, ref) => {
   const { modalBodyText, modalSize, modalImgSize } = props;
-  const {
-    productDetailModalType 
-  } = useToast();
+  const { productDetailModalType } = useToast();
   const modalDivRef1 = useRef(null);
   const modalRef1 = useRef(null);
   const imageRef = useRef(null);
   const getMessage = (productDetailModalType = null) => {
-    if(imageRef.current)
-      imageRef.current.style.display = "none";
-    switch(productDetailModalType) {
-    case 'loading':
-      return '進行中...';
-    case 'loadingData':
-      return '載入資料中...';
-    case 'creating':
-      return '建立中...';
-    case 'deleting':
-      return '刪除中...';
-    case 'checking':
-      return '檢查中...';
-    default:
-      return'.........';
+    if (imageRef.current) imageRef.current.style.display = "none";
+    switch (productDetailModalType) {
+      case "loading":
+        return "進行中...";
+      case "loadingData":
+        return "載入資料中...";
+      case "creating":
+        return "建立中...";
+      case "deleting":
+        return "刪除中...";
+      case "checking":
+        return "檢查中...";
+      default:
+        return ".........";
     }
-    
   };
+  useEffect(() => {
+    console.log("detail");
+  });
   useEffect(() => {
     modalRef1.current = new Modal(modalDivRef1.current);
   }, []);
@@ -98,10 +98,7 @@ const ProductDetailModal = forwardRef((props, ref) => {
         aria-hidden="true"
         style={{ zIndex: 1060 }}
       >
-        <div
-          className="modal-dialog"
-          style={modalSize}
-        >
+        <div className="modal-dialog" style={modalSize}>
           <div className="modal-content">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
@@ -126,7 +123,7 @@ const ProductDetailModal = forwardRef((props, ref) => {
                 ref={imageRef}
                 className="img-fluid"
                 // alt="進行中"
-                alt=''
+                alt=""
                 style={{ maxWidth: "100%", maxHeight: "100%" }}
                 id="picture"
               />
@@ -147,4 +144,4 @@ const ProductDetailModal = forwardRef((props, ref) => {
     </>
   );
 });
-export default ProductDetailModal;
+export default memo(ProductDetailModal);

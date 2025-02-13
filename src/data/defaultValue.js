@@ -16,3 +16,20 @@ export const pendingProductInfoDefaluValue = {
   id:null,
   type:null
 };
+
+export const orderDefaultValue =
+  {
+    data: {
+      create_at: "",
+      is_paid: 0,
+      message: "",
+      products: {},
+      user: {
+        name: "",
+        tel: "",
+        email: "",
+        address: "",
+      },
+      num: "",
+    },
+  };

@@ -1,31 +1,69 @@
-import { useState, useCallback, useEffect,useRef } from "react";
+import { useState, useCallback, useEffect, useRef, useMemo } from "react";
 import { apiServiceAdmin } from "../../apiService/apiService";
+import { useNavigate } from "react-router-dom";
 import {
-  Pagination, Orders, OrderEditModal,OrderEditModal2,
-  ProductDetailModal,OrderDeleteModal 
+  Pagination,
+  Orders,
+  OrderViewModal,
+  OrderEditModal2,
+  ProductDetailModal,
+  OrderDeleteModal,
 } from "../../component/back";
 import * as utils from "../../utils/utils";
 import { ToastContext } from "../../component/back/ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function OrderListPage() {
+  const navigate = useNavigate();
   const [orderData, setOrderData] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
   const [editProduct, setEditProduct] = useState({});
   const [modalMode, setModalMode] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [productDetailModalType, setProductDetailModalType] = useState("");
   const ProductDetailModalRef = useRef(null);
-  const [isProductDeleteModalOpen,setIsProductDeleteModalOpen] = useState(false);
+  const [isProductDeleteModalOpen, setIsProductDeleteModalOpen] =
+    useState(false);
   const [isShowToast, setIsShowToast] = useState(false);
-  const toastContextValue = {
-    setIsShowToast,
-    isShowToast,
-    setProductDetailModalType,
-    productDetailModalType,
-  };
-  const getOrderData = useCallback(async (page = 1) => {
+  const editOrderId = useRef(null);
+  const [isLoging, setIsLogin] = useState(false);
+  const toastContextValue = useMemo(
+    () => ({
+      setIsShowToast,
+      isShowToast,
+      setProductDetailModalType,
+      productDetailModalType,
+    }),
+    [
+      setIsShowToast,
+      isShowToast,
+      setProductDetailModalType,
+      productDetailModalType,
+    ]
+  );
+  const handleCheckLogin = async () => {
     setProductDetailModalType("checking");
     utils.modalStatus(ProductDetailModalRef, "", null, false);
+    try {
+      await apiServiceAdmin.axiosPost("/api/user/check", {});
+      setIsLogin(true);
+    } catch (error) {
+      console.log(error);
+      navigate("/login");
+    } finally {
+      ProductDetailModalRef.current.close();
+    }
+  };
+  const handleGetOrders = async () => {
+    try {
+      await getOrderData();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      ProductDetailModalRef.current.close();
+    }
+  };
+  const getOrderData = useCallback(async (page = 1) => {
     try {
       const resOrder = await apiServiceAdmin.axiosGetProductDataByConfig(
         `/api/${APIPath}/admin/orders`,
@@ -36,20 +74,24 @@ export default function OrderListPage() {
         }
       );
       // console.log(resOrder.data);
-      setOrderData(resOrder.data.orders);
+      setOrderData(
+        resOrder.data.orders.filter((order) => {
+          return order.id !== undefined;
+        })
+      );
       setPageInfo(resOrder.data.pagination);
     } catch (error) {
       console.log(error);
-      // navigate('/login');
     } finally {
       ProductDetailModalRef.current.close();
+      editOrderId.current = null;
     }
   }, []);
   const handleDeleteModal = useCallback(
     (orderId) => {
-      console.log('delete orderId=',orderId);
+      console.log("delete orderId=", orderId);
       const updatedOrder =
-      orderData.find((order) => order.id === orderId) ?? {};
+        orderData.find((order) => order.id === orderId) ?? {};
       setEditProduct(updatedOrder);
       setIsProductDeleteModalOpen(true);
     },
@@ -58,9 +100,10 @@ export default function OrderListPage() {
   const handleOpenOrderModalWithValue = useCallback(
     (mode, orderId = null) => {
       if (mode === "edit") {
-     
-        console.log('edit=',orderData.find((order) => order.id === orderId) ?? {});
-      
+        console.log(
+          "edit=",
+          orderData.find((order) => order.id === orderId) ?? {}
+        );
         let temp = orderData.find((order) => order.id === orderId);
         let products = temp.products;
         const filteredProducts = Object.keys(products).reduce((acc, key) => {
@@ -68,7 +111,7 @@ export default function OrderListPage() {
           acc[key] = { id, product_id, qty };
           return acc;
         }, {});
-        console.log('filteredProducts=',filteredProducts);
+        console.log("filteredProducts=", filteredProducts);
         let tempx = {
           data: {
             create_at: temp.create_at,
@@ -79,29 +122,38 @@ export default function OrderListPage() {
               address: temp.user.address,
               email: temp.user.email,
               name: temp.user.name,
-              tel: temp.user.tel
+              tel: temp.user.tel,
             },
-            num: temp.num
+            num: temp.num,
           },
         };
         setEditProduct(tempx);
         setModalMode(mode);
-        console.log('tempx=',tempx);
+        setIsEditModalOpen(true);
+        editOrderId.current = orderId;
       } else if (orderId && mode === "view") {
         console.log("orderId=", orderId);
         setEditProduct(
           () => orderData.find((order) => order.id === orderId) ?? {}
         );
-        console.log('orderData=',orderData.find((order) => order.id === orderId));
+        console.log(
+          "orderData=",
+          orderData.find((order) => order.id === orderId)
+        );
         setModalMode(mode);
+        setIsViewModalOpen(true);
       }
-      setIsModalOpen(true);
     },
     [orderData]
   );
   useEffect(() => {
-    getOrderData();
+    handleCheckLogin();
   }, []);
+  useEffect(() => {
+    if (isLoging) {
+      handleGetOrders();
+    }
+  }, [isLoging]);
   return (
     <>
       {orderData.length > 0 ? (
@@ -142,29 +194,31 @@ export default function OrderListPage() {
       ) : (
         <h1>沒有訂單或訂單載入中</h1>
       )}
-      {/* <OrderEditModal
+      <OrderViewModal
         editProduct={editProduct}
         setModalMode={setModalMode}
         modalMode={modalMode}
         getData={getOrderData}
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-      /> */}
-      <OrderEditModal2
-        editProduct={editProduct}
-        setModalMode={setModalMode}
-        modalMode={modalMode}
-        getData={getOrderData}
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isViewModalOpen}
+        setIsModalOpen={setIsViewModalOpen}
       />
 
       <ToastContext.Provider value={toastContextValue}>
+        <OrderEditModal2
+          editProduct={editProduct}
+          setModalMode={setModalMode}
+          modalMode={modalMode}
+          getData={getOrderData}
+          isModalOpen={isEditModalOpen}
+          setIsModalOpen={setIsEditModalOpen}
+          editOrderId={editOrderId}
+        />
         <ProductDetailModal
           ref={ProductDetailModalRef}
           modalBodyText="訊息"
           modalSize={{ width: "300px", height: "200px" }}
           modalImgSize={{ width: "300px", height: "120px" }}
+          // productDetailModalType={productDetailModalType}
         />
         <OrderDeleteModal
           setModalMode={setModalMode}
@@ -173,8 +227,8 @@ export default function OrderListPage() {
           isProductDeleteModalOpen={isProductDeleteModalOpen}
           setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
           editProduct={editProduct}
-        // isShowToast={isShowToast}
-        // setIsShowToast={setIsShowToast}
+          // isShowToast={isShowToast}
+          // setIsShowToast={setIsShowToast}
         />
       </ToastContext.Provider>
     </>
