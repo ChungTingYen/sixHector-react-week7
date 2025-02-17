@@ -8,9 +8,9 @@ import { toastInfo } from "../../data/dataModel";
 import * as utils from "../../utils/utils";
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function OrderDeleteModal(props) {
-  useEffect(() => {
-    console.log("delete");
-  });
+  // useEffect(() => {
+  //   console.log("delete");
+  // });
   const {
     editProduct,
     setModalMode,

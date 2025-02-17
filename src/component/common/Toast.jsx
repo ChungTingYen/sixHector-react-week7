@@ -35,7 +35,7 @@ const ToastComponent = ({
     toastInstance.hide();
     setIsShowToast(false);
   };
-
+  // console.log('isShowToast');
   return (
     <div className="toast-container position-fixed bottom-0 end-0 p-3">
       <div

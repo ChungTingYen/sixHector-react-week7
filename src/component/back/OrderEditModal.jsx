@@ -21,9 +21,9 @@ function OrderEditModal2(props) {
   const [modalOrder, setModalOrder] = useState(orderDefaultValue);
   const ProductDetailModalRef = useRef(null);
   const { setIsShowToast, setProductDetailModalType } = useToast();
-  useEffect(() => {
-    console.log("edit");
-  });
+  // useEffect(() => {
+  //   console.log("edit");
+  // });
   const handleEditDataChange = (e, key = null) => {
     const { name, type, value, checked } = e.target;
     let temp = orderDefaultValue;
@@ -64,7 +64,7 @@ function OrderEditModal2(props) {
     // if (type === "number") tempValue = Number(value);
     // else if (type === "checkbox") tempValue = checked;
     // else tempValue = value;
-    console.log("temp=", temp);
+    // console.log("temp=", temp);
     setModalOrder(temp);
   };
   const handleUpdateOrder = async () => {
@@ -117,7 +117,7 @@ function OrderEditModal2(props) {
       if (Object.keys(editProduct).length > 0) setModalOrder(editProduct);
       openEditModal();
     }
-    console.log("modalOrder=", modalOrder);
+    // console.log("modalOrder=", modalOrder);
   }, [isModalOpen, editProduct]);
 
   return (

@@ -9,7 +9,7 @@ import {
   Pagination,
   AppFunction,
 } from "../../component/back";
-import { ProductDetailModal } from "../../component/common";
+import { ProductDetailModal,Toast } from "../../component/common";
 import * as utils from "../../utils/utils";
 import { tempProductDefaultValue } from "../../data/defaultValue";
 import { toastInfo } from "../../data/dataModel";
@@ -367,8 +367,12 @@ export default function ProductListsPage() {
           isProductDeleteModalOpen={isProductDeleteModalOpen}
           setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
           editProduct={editProduct}
-          // isShowToast={isShowToast}
-          // setIsShowToast={setIsShowToast}
+        />
+        <Toast
+          toastText={toastInfo.toastText}
+          type={toastInfo.type}
+          isShowToast={isShowToast}
+          setIsShowToast={setIsShowToast}
         />
       </ToastContext.Provider>
     </>

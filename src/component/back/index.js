@@ -10,4 +10,4 @@ export { default as Products } from './Products';
 export { default as Orders } from './Orders';
 export { default as OrderViewModal } from './OrderViewModal';
 export { default as OrderDeleteModal } from './OrderDeleteModal';
-export { default as OrderEditModal2 } from './OrderEditModal2';
+export { default as OrderEditModal } from './OrderEditModal';

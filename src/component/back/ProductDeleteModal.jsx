@@ -68,11 +68,11 @@ const ProductDeleteModal = (props)=>{
   };
   return (
     <>
-      <Toast toastText={toastInfo.toastText}
+      {/* <Toast toastText={toastInfo.toastText}
         type = {toastInfo.type}
         // isShowToast={isShowToast} 
         // setIsShowToast={setIsShowToast}
-      />
+      /> */}
     
       <ProductDetailModal
         ref={ProductDetailModalRef}

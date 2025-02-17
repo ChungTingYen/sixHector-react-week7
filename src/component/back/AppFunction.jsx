@@ -21,10 +21,9 @@ const AppFunction = (props) => {
   };
   const handleLogout = async () => {
     try {
-      const res = await apiServiceAdmin.axiosPostLogout("/logout");
+      const res = await apiServiceAdmin.axiosPost('logout');
       alert(res.data.success ? res.data.message : "登出失敗");
       if (res.data.success) {
-        document.cookie = "authToken; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
         setIsLogin(false);
         navigate('/login');
       }
@@ -33,6 +32,20 @@ const AppFunction = (props) => {
       console.log(error);
     }
   };
+  // const handleLogout = async () => {
+  //   try {
+  //     const res = await apiServiceAdmin.axiosPostLogout("/logout");
+  //     alert(res.data.success ? res.data.message : "登出失敗");
+  //     if (res.data.success) {
+  //       document.cookie = "authToken; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+  //       setIsLogin(false);
+  //       navigate('/login');
+  //     }
+  //   } catch (error) {
+  //     alert(error);
+  //     console.log(error);
+  //   }
+  // };
   return (
     <>
       <div className="row mt-5 mt-1 mb-2 mx-1">

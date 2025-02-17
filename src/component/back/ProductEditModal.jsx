@@ -452,12 +452,12 @@ const ProductEditModal = (props) => {
         modalImgSize={{ width: "300px", height: "120px" }}
         // productDetailModalType={productDetailModalType}
       />
-      <Toast
+      {/* <Toast
         toastText={toastInfo.toastText}
         type={toastInfo.type}
         // isShowToast={isShowToast}
         // setIsShowToast={setIsShowToast}
-      />
+      /> */}
     </>
   );
 };

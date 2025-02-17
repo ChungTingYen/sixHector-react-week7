@@ -20,23 +20,23 @@ const ProductDetailModal = forwardRef((props, ref) => {
   const getMessage = (productDetailModalType = null) => {
     if (imageRef.current) imageRef.current.style.display = "none";
     switch (productDetailModalType) {
-      case "loading":
-        return "進行中...";
-      case "loadingData":
-        return "載入資料中...";
-      case "creating":
-        return "建立中...";
-      case "deleting":
-        return "刪除中...";
-      case "checking":
-        return "檢查中...";
-      default:
-        return ".........";
+    case "loading":
+      return "進行中...";
+    case "loadingData":
+      return "載入資料中...";
+    case "creating":
+      return "建立中...";
+    case "deleting":
+      return "刪除中...";
+    case "checking":
+      return "檢查中...";
+    default:
+      return ".........";
     }
   };
-  useEffect(() => {
-    console.log("detail");
-  });
+  // useEffect(() => {
+  //   console.log("detail");
+  // });
   useEffect(() => {
     modalRef1.current = new Modal(modalDivRef1.current);
   }, []);

@@ -5,7 +5,7 @@ import {
   Pagination,
   Orders,
   OrderViewModal,
-  OrderEditModal2,
+  OrderEditModal,
   ProductDetailModal,
   OrderDeleteModal,
 } from "../../component/back";
@@ -204,7 +204,7 @@ export default function OrderListPage() {
       />
 
       <ToastContext.Provider value={toastContextValue}>
-        <OrderEditModal2
+        <OrderEditModal
           editProduct={editProduct}
           setModalMode={setModalMode}
           modalMode={modalMode}
