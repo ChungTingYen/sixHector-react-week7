@@ -33,3 +33,12 @@ export const orderDefaultValue =
       num: "",
     },
   };
+
+export const toastSliceDefaultValue = {
+  toastInfo:
+  {
+    toastText: '',
+    type: '',
+    isShowToast: false,
+  }
+};

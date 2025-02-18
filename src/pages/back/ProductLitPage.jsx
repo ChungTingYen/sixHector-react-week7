@@ -9,13 +9,15 @@ import {
   Pagination,
   AppFunction,
 } from "../../component/back";
-import { ProductDetailModal,Toast } from "../../component/common";
+import { ProductDetailModal,Toast,Toast2 } from "../../component/common";
 import * as utils from "../../utils/utils";
 import { tempProductDefaultValue } from "../../data/defaultValue";
 import { toastInfo } from "../../data/dataModel";
 import { productDataAtLocal } from "../../data/productDataAtLocal";
 import { useDebounce } from "@uidotdev/usehooks";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useSelector } from "react-redux";
+
 export default function ProductListsPage() {
   const navigate = useNavigate();
   const [isLoging, setIsLogin] = useState(false);
@@ -39,6 +41,12 @@ export default function ProductListsPage() {
     setProductDetailModalType,
     productDetailModalType,
   };
+  const toastSlice = useSelector((state) => {
+    return state.toastAtStore;
+  });
+  useEffect(()=>{
+    console.log('toastSlice in ListPage:',toastSlice);
+  });
   const filterData = useMemo(() => {
     return (
       [...productData]
@@ -98,7 +106,7 @@ export default function ProductListsPage() {
         console.log(error);
         navigate("/login");
       } finally {
-        // ProductDetailModalRef.current.close();
+        ProductDetailModalRef.current.close();
       }
     },
     [navigate, pageInfo]
@@ -373,6 +381,8 @@ export default function ProductListsPage() {
           type={toastInfo.type}
           isShowToast={isShowToast}
           setIsShowToast={setIsShowToast}
+        />
+        <Toast2
         />
       </ToastContext.Provider>
     </>
