@@ -1,13 +1,15 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef,memo,useState  } from "react";
+import { useEffect, useRef, memo } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import * as utils from '../../utils/utils';
-import { ProductDetailModal,Toast } from '../common';
-import { toastInfo } from '../../data/dataModel';
+import * as utils from "../../utils/utils";
+import { ProductDetailModal } from "../common";
 import { useToast } from "./ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
-const ProductDeleteModal = (props)=>{
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
+
+const ProductDeleteModal = (props) => {
   const {
     editProduct,
     setModalMode,
@@ -15,25 +17,19 @@ const ProductDeleteModal = (props)=>{
     setIsProductDeleteModalOpen,
     getProductData,
   } = props;
-
+  const { setProductDetailModalType } = useToast();
   const deleteModalDivRef = useRef(null);
   const ProductDetailModalRef = useRef(null);
-  const {
-    setIsShowToast,
-    isShowToast,
-    setProductDetailModalType,
-    productDetailModalType 
-  } = useToast();
-  // const [productDetailModalType,setProductDetailModalType] = useState('');
-  // const [isShowToast,setIsShowToast] = useState(false);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     if (deleteModalDivRef.current) {
       new Modal(deleteModalDivRef.current, { backdrop: false });
     }
-  },[]);
+  }, []);
   useEffect(() => {
     if (isProductDeleteModalOpen) openDeleteModal();
-  },[isProductDeleteModalOpen]);
+  }, [isProductDeleteModalOpen]);
 
   const openDeleteModal = () => {
     const modalInstance = Modal.getInstance(deleteModalDivRef.current);
@@ -47,39 +43,38 @@ const ProductDeleteModal = (props)=>{
   };
   const deleteProductInModal = async () => {
     if (editProduct?.id === null) return;
-    setProductDetailModalType('deleting');
     closeDeleteModal();
-    utils.modalStatus(ProductDetailModalRef,"", null, false);
+    setProductDetailModalType("deleting");
+    utils.modalStatus(ProductDetailModalRef, "刪除中", null, false);
     try {
       await apiServiceAdmin.axiosDeleteProduct(
-        `/api/${APIPath}/admin/product/${editProduct.id}`,
+        `/api/${APIPath}/admin/product/${editProduct.id}`
       );
       setModalMode(null);
       getProductData();
-      setIsShowToast(true);
-      toastInfo.type = 'success';
-      toastInfo.toastText = '完成刪除!' ;
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            toastText: "完成刪除!",
+            type: "warning",
+            isShowToast: true,
+          },
+        })
+      );
     } catch (error) {
       console.error("刪除產品時發生錯誤：", error);
-    } finally{
+    } finally {
       ProductDetailModalRef.current.close();
       closeDeleteModal();
     }
   };
   return (
     <>
-      {/* <Toast toastText={toastInfo.toastText}
-        type = {toastInfo.type}
-        // isShowToast={isShowToast} 
-        // setIsShowToast={setIsShowToast}
-      /> */}
-    
       <ProductDetailModal
         ref={ProductDetailModalRef}
         modalBodyText="訊息"
         modalSize={{ width: "300px", height: "200px" }}
         modalImgSize={{ width: "300px", height: "120px" }}
-        // productDetailModalType={productDetailModalType}
       />
       <div
         className="modal fade"

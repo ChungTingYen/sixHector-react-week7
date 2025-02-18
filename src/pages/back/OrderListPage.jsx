@@ -9,6 +9,7 @@ import {
   ProductDetailModal,
   OrderDeleteModal,
 } from "../../component/back";
+import { Toast2 } from "../../component/common";
 import * as utils from "../../utils/utils";
 import { ToastContext } from "../../component/back/ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
@@ -24,22 +25,14 @@ export default function OrderListPage() {
   const ProductDetailModalRef = useRef(null);
   const [isProductDeleteModalOpen, setIsProductDeleteModalOpen] =
     useState(false);
-  const [isShowToast, setIsShowToast] = useState(false);
   const editOrderId = useRef(null);
   const [isLoging, setIsLogin] = useState(false);
   const toastContextValue = useMemo(
     () => ({
-      setIsShowToast,
-      isShowToast,
       setProductDetailModalType,
       productDetailModalType,
     }),
-    [
-      setIsShowToast,
-      isShowToast,
-      setProductDetailModalType,
-      productDetailModalType,
-    ]
+    [setProductDetailModalType, productDetailModalType]
   );
   const handleCheckLogin = async () => {
     setProductDetailModalType("checking");
@@ -89,7 +82,7 @@ export default function OrderListPage() {
   }, []);
   const handleDeleteModal = useCallback(
     (orderId) => {
-      console.log("delete orderId=", orderId);
+      // console.log("delete orderId=", orderId);
       const updatedOrder =
         orderData.find((order) => order.id === orderId) ?? {};
       setEditProduct(updatedOrder);
@@ -100,46 +93,47 @@ export default function OrderListPage() {
   const handleOpenOrderModalWithValue = useCallback(
     (mode, orderId = null) => {
       if (mode === "edit") {
-        console.log(
-          "edit=",
-          orderData.find((order) => order.id === orderId) ?? {}
-        );
+        // console.log(
+        //   "edit=",
+        //   orderData.find((order) => order.id === orderId) ?? {}
+        // );
         let temp = orderData.find((order) => order.id === orderId);
-        let products = temp.products;
-        const filteredProducts = Object.keys(products).reduce((acc, key) => {
-          const { id, product_id, qty } = products[key];
-          acc[key] = { id, product_id, qty };
-          return acc;
-        }, {});
-        console.log("filteredProducts=", filteredProducts);
-        let tempx = {
-          data: {
-            create_at: temp.create_at,
-            is_paid: temp.is_paid,
-            message: temp.message,
-            products: filteredProducts,
-            user: {
-              address: temp.user.address,
-              email: temp.user.email,
-              name: temp.user.name,
-              tel: temp.user.tel,
-            },
-            num: temp.num,
-          },
-        };
-        setEditProduct(tempx);
+        // let products = temp.products;
+        // const filteredProducts = Object.keys(products).reduce((acc, key) => {
+        //   const { id, product_id, qty } = products[key];
+        //   acc[key] = { id, product_id, qty };
+        //   return acc;
+        // }, {});
+        // console.log("filteredProducts=", filteredProducts);
+        let products = { data: temp };
+        // let tempx = {
+        //   data: {
+        //     create_at: temp.create_at,
+        //     is_paid: temp.is_paid,
+        //     message: temp.message,
+        //     products: filteredProducts,
+        //     user: {
+        //       address: temp.user.address,
+        //       email: temp.user.email,
+        //       name: temp.user.name,
+        //       tel: temp.user.tel,
+        //     },
+        //     num: temp.num,
+        //   },
+        // };
+        setEditProduct(products);
         setModalMode(mode);
         setIsEditModalOpen(true);
         editOrderId.current = orderId;
       } else if (orderId && mode === "view") {
-        console.log("orderId=", orderId);
+        // console.log("orderId=", orderId);
         setEditProduct(
           () => orderData.find((order) => order.id === orderId) ?? {}
         );
-        console.log(
-          "orderData=",
-          orderData.find((order) => order.id === orderId)
-        );
+        // console.log(
+        //   "orderData=",
+        //   orderData.find((order) => order.id === orderId)
+        // );
         setModalMode(mode);
         setIsViewModalOpen(true);
       }
@@ -218,7 +212,6 @@ export default function OrderListPage() {
           modalBodyText="訊息"
           modalSize={{ width: "300px", height: "200px" }}
           modalImgSize={{ width: "300px", height: "120px" }}
-          // productDetailModalType={productDetailModalType}
         />
         <OrderDeleteModal
           setModalMode={setModalMode}
@@ -227,10 +220,9 @@ export default function OrderListPage() {
           isProductDeleteModalOpen={isProductDeleteModalOpen}
           setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
           editProduct={editProduct}
-          // isShowToast={isShowToast}
-          // setIsShowToast={setIsShowToast}
         />
       </ToastContext.Provider>
+      <Toast2 />
     </>
   );
 }

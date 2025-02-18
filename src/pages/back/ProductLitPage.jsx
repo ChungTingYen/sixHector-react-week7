@@ -9,15 +9,14 @@ import {
   Pagination,
   AppFunction,
 } from "../../component/back";
-import { ProductDetailModal,Toast,Toast2 } from "../../component/common";
+import { ProductDetailModal, Toast2 } from "../../component/common";
 import * as utils from "../../utils/utils";
 import { tempProductDefaultValue } from "../../data/defaultValue";
-import { toastInfo } from "../../data/dataModel";
 import { productDataAtLocal } from "../../data/productDataAtLocal";
 import { useDebounce } from "@uidotdev/usehooks";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useSelector } from "react-redux";
-
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 export default function ProductListsPage() {
   const navigate = useNavigate();
   const [isLoging, setIsLogin] = useState(false);
@@ -32,21 +31,13 @@ export default function ProductListsPage() {
     useState(false);
   const [isProductEditModalOpen, setIsProductEditModalOpen] = useState(false);
   const [productDetailModalType, setProductDetailModalType] = useState("");
-  const [isShowToast, setIsShowToast] = useState(false);
   const ProductDetailModalRef = useRef(null);
   const debouncedSearchTerm = useDebounce(category, 1000);
   const toastContextValue = {
-    setIsShowToast,
-    isShowToast,
     setProductDetailModalType,
     productDetailModalType,
   };
-  const toastSlice = useSelector((state) => {
-    return state.toastAtStore;
-  });
-  useEffect(()=>{
-    console.log('toastSlice in ListPage:',toastSlice);
-  });
+  const dispatch = useDispatch();
   const filterData = useMemo(() => {
     return (
       [...productData]
@@ -156,9 +147,15 @@ export default function ProductListsPage() {
         wrapData
       );
       resProduct.data.success && getProductData();
-      setIsShowToast(true);
-      toastInfo.type = "success";
-      toastInfo.toastText = "成功上傳!";
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            type: "success",
+            toastText: "成功上傳!",
+            isShowToast: true,
+          },
+        })
+      );
     } catch (error) {
       console.log(error);
     } finally {
@@ -172,9 +169,15 @@ export default function ProductListsPage() {
     const results = await utils.AddProductsSequentially(productDataAtLocal);
     setEditProduct(tempProductDefaultValue);
     if (!results.length) {
-      setIsShowToast(true);
-      toastInfo.type = "success";
-      toastInfo.toastText = "成功上傳!";
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            type: "success",
+            toastText: "成功上傳!",
+            isShowToast: true,
+          },
+        })
+      );
       getProductData();
     } else alert(results.join(","));
     ProductDetailModalRef.current.close();
@@ -187,9 +190,15 @@ export default function ProductListsPage() {
       const results = await utils.deleteProductsSequentially(productData);
       setEditProduct(tempProductDefaultValue);
       if (!results.length) {
-        setIsShowToast(true);
-        toastInfo.type = "danger";
-        toastInfo.toastText = "刪除完成!";
+        dispatch(
+          setIsShowToastSlice({
+            toastInfo: {
+              type: "danger",
+              toastText: "刪除完成!",
+              isShowToast: true,
+            },
+          })
+        );
         getProductData();
       } else alert(results.join(","));
     }
@@ -358,7 +367,6 @@ export default function ProductListsPage() {
           modalBodyText="訊息"
           modalSize={{ width: "300px", height: "200px" }}
           modalImgSize={{ width: "300px", height: "120px" }}
-          // productDetailModalType={productDetailModalType}
         />
         <ProductEditModal
           editProduct={editProduct}
@@ -376,14 +384,7 @@ export default function ProductListsPage() {
           setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
           editProduct={editProduct}
         />
-        <Toast
-          toastText={toastInfo.toastText}
-          type={toastInfo.type}
-          isShowToast={isShowToast}
-          setIsShowToast={setIsShowToast}
-        />
-        <Toast2
-        />
+        {/* <Toast2 /> */}
       </ToastContext.Provider>
     </>
   );

@@ -1,13 +1,10 @@
- 
-import  { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Toast } from "bootstrap";
-import { useDispatch,useSelector } from "react-redux";
-import { setIsShowToastSlice } from '../../slice/toastSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 const { VITE_TOAST_SHOWTIME } = import.meta.env;
-import { toastSliceDefaultValue } from '../../data/defaultValue';
-import { toastInfo } from "../../data/dataModel";
+import { toastSliceDefaultValue } from "../../data/defaultValue";
 const ToastComponent = () => {
-  // const { toastText,type,isShowToast,setIsShowToast, } = props;
   const toastDivRef = useRef();
   const dispatch = useDispatch();
   useEffect(() => {
@@ -16,21 +13,21 @@ const ToastComponent = () => {
         autohide: true,
         delay: parseInt(VITE_TOAST_SHOWTIME), // x秒後自動關閉
       });
-      toastDivRef.current.addEventListener('hidden.bs.toast', () => {
+      toastDivRef.current.addEventListener("hidden.bs.toast", () => {
         dispatch(setIsShowToastSlice(toastSliceDefaultValue));
       });
     }
   }, []);
   const toastSlice = useSelector((state) => {
-    console.log('state:',state);
+    // console.log("state:", state);
     return state.toastAtStore.toastInfo;
   });
- 
+
   useEffect(() => {
-    console.log('toast2:',toastSlice);
-    console.log('toast2  isShowToast:',toastSlice.isShowToast);
+    // console.log("toast2:", toastSlice);
+    // console.log("toast2  isShowToast:", toastSlice.isShowToast);
     if (toastSlice.isShowToast) {
-      console.log('toast open');
+      // console.log("toast open");
       showToast();
     }
   }, [toastSlice.isShowToast]);

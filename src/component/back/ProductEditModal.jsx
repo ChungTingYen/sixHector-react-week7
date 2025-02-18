@@ -5,10 +5,10 @@ import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
 import * as utils from "../../utils/utils";
 import { tempProductDefaultValue } from "../../data/defaultValue";
-import { ProductDetailModal, } from "../common";
+import { ProductDetailModal } from "../common";
 import { useToast } from "./ToastContext";
 import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from '../../slice/toastSlice';
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 
 const APIPath = import.meta.env.VITE_API_PATH;
 
@@ -22,7 +22,7 @@ const ProductEditModal = (props) => {
     setIsProductEditModalOpen,
   } = props;
   const dispatch = useDispatch();
-  // const {  setProductDetailModalType } = useToast();
+  const { setProductDetailModalType } = useToast();
   const [modalProduct, setModalProduct] = useState(editProduct);
   const editModalDivRef = useRef(null);
   const uploadRef = useRef(null);
@@ -77,8 +77,8 @@ const ProductEditModal = (props) => {
     modalInstance.show();
   };
   const handleImgUpload = async (e) => {
-    // setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "進行中", null, false);
+    setProductDetailModalType("loading");
+    utils.modalStatus(ProductDetailModalRef, "", null, false);
     try {
       const formData = new FormData();
       formData.append("file-to-upload", e.target.files[0]);
@@ -139,7 +139,8 @@ const ProductEditModal = (props) => {
       alert("未取得product ID");
       return;
     }
-    utils.modalStatus(ProductDetailModalRef, "進行中", null, false);
+    setProductDetailModalType("loading");
+    utils.modalStatus(ProductDetailModalRef, "", null, false);
     try {
       const result = await implementEditProduct(modalMode, modalProduct);
       if (result) {
@@ -147,14 +148,15 @@ const ProductEditModal = (props) => {
         getProductData();
         setModalProduct(tempProductDefaultValue);
         uploadRef.current.value = "";
-        console.log('in editModal');
-        dispatch(setIsShowToastSlice({
-          toastInfo: {
-            toastText:modalMode === "create" ? "新增完成" : "更新完成",
-            type:'warning',
-            isShowToast:true 
-          }
-      }));
+        dispatch(
+          setIsShowToastSlice({
+            toastInfo: {
+              toastText: modalMode === "create" ? "新增完成" : "更新完成",
+              type: "warning",
+              isShowToast: true,
+            },
+          })
+        );
       } else {
         alert(modalMode === "create" ? "新增失敗:" : "更新失敗:");
       }
@@ -455,7 +457,8 @@ const ProductEditModal = (props) => {
         ref={ProductDetailModalRef}
         modalBodyText="訊息"
         modalSize={{ width: "300px", height: "200px" }}
-        modalImgSize={{ width: "300px", height: "120px" }}/>
+        modalImgSize={{ width: "300px", height: "120px" }}
+      />
     </>
   );
 };

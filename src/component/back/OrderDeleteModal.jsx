@@ -1,16 +1,14 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useRef, memo, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import { ProductDetailModal, Toast } from "../common";
-import { useToast } from "./ToastContext";
-import { toastInfo } from "../../data/dataModel";
+import { ProductDetailModal } from "../common";
 import * as utils from "../../utils/utils";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useDispatch } from "react-redux";
 export default function OrderDeleteModal(props) {
-  // useEffect(() => {
-  //   console.log("delete");
-  // });
+  const dispatch = useDispatch();
   const {
     editProduct,
     setModalMode,
@@ -18,7 +16,6 @@ export default function OrderDeleteModal(props) {
     setIsProductDeleteModalOpen,
     getData,
   } = props;
-  const { setIsShowToast, isShowToast, setProductDetailModalType } = useToast();
   const deleteModalDivRef = useRef();
   const ProductDetailModalRef = useRef();
   const closeDeleteModal = () => {
@@ -33,18 +30,25 @@ export default function OrderDeleteModal(props) {
   };
   const deleteProductInModal = async () => {
     if (editProduct?.id === null) return;
-    setProductDetailModalType("deleting");
+    // setProductDetailModalType("deleting");
     closeDeleteModal();
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    utils.modalStatus(ProductDetailModalRef, "刪除中", null, false);
     try {
       await apiServiceAdmin.axiosDelete(
         `/api/${APIPath}/admin/order/${editProduct.id}`
       );
       setModalMode(null);
       getData();
-      setIsShowToast(true);
-      toastInfo.type = "success";
-      toastInfo.toastText = "完成刪除!";
+      console.log("delete");
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            toastText: "完成刪除!",
+            type: "dark",
+            isShowToast: true,
+          },
+        })
+      );
     } catch (error) {
       console.error("刪除產品時發生錯誤：", error);
     } finally {
@@ -62,13 +66,6 @@ export default function OrderDeleteModal(props) {
   }, [isProductDeleteModalOpen]);
   return (
     <>
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        isShowToast={isShowToast}
-        setIsShowToast={setIsShowToast}
-      />
-
       <ProductDetailModal
         ref={ProductDetailModalRef}
         modalBodyText="訊息"

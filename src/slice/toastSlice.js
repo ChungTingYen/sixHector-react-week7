@@ -7,14 +7,13 @@ export const toastSlice = createSlice({
   ,
   reducers:{
     setIsShowToastSlice(state,action){
-      console.log('setIsShowToast,state.toastInfo:',state.toastInfo.isShowToast);
-      console.log('setIsShowToast, state.toastInfo:', JSON.stringify(state.toastInfo));
+      // console.log('setIsShowToast,state.toastInfo:',state.toastInfo.isShowToast);
+      // console.log('setIsShowToast, state.toastInfo:', JSON.stringify(state.toastInfo));
       state.toastInfo = {
         ...state.toastInfo,
         ...action.payload.toastInfo
       };
-
-      console.log('action.payload:',action.payload);
+      // console.log('action.payload:',action.payload);
     }
   }
 });
