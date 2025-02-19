@@ -1,20 +1,16 @@
 import { useEffect, useState,useCallback } from "react";
 import { apiService } from "../../apiService/apiService";
-import { toastInfo } from '../../data/dataModel';
 import { Carts,LoadingOverlay } from "../../component/front";
-import { Toast } from "../../component/common";
 import { useNavigatePage } from '../../hook';
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 export default function CartPage(){
   const [cart, setCart] = useState({});
   const [reload, setReload] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [isShowToast, setIsShowToast] = useState(false);
-  const setToastContent = (toastText, type) => {
-    setIsShowToast(true);
-    toastInfo.toastText = toastText;
-    toastInfo.type = type;
-  };
+
+  const dispatch = useDispatch();
   const navigate = useNavigatePage();
   const handleDeleteCart = useCallback(async (cartId = null) => {
     //如果有cardId就是刪除一個，沒有就是刪除全部
@@ -23,11 +19,23 @@ export default function CartPage(){
     try {
       await apiService.axiosDelete(path);
       setReload(true);
-      setToastContent("刪除商品完成", "success");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:"light",
+          text:'刪除完成',
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
       alert(error);
-      setToastContent("刪除商品失敗", "error");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:"light",
+          text:'刪除失敗',
+          isShowToast:true
+        }
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +81,6 @@ export default function CartPage(){
                       handleDeleteCart={handleDeleteCart}
                       setIsLoading={setIsLoading}
                       setReload={setReload} 
-                      setToastContent={setToastContent}
                     />
                   ))}
           </tbody>
@@ -110,12 +117,6 @@ export default function CartPage(){
         )}
       </div>
       {isLoading && <LoadingOverlay />}
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        isShowToast={isShowToast}
-        setIsShowToast={setIsShowToast}
-      />
     </>
   );
 }

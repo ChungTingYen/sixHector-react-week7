@@ -60,13 +60,8 @@ export default function OrderListPage() {
     try {
       const resOrder = await apiServiceAdmin.axiosGetProductDataByConfig(
         `/api/${APIPath}/admin/orders`,
-        {
-          params: {
-            page: page,
-          },
-        }
+        { params: { page: page, }, }
       );
-      // console.log(resOrder.data);
       setOrderData(
         resOrder.data.orders.filter((order) => {
           return order.id !== undefined;
@@ -82,7 +77,6 @@ export default function OrderListPage() {
   }, []);
   const handleDeleteModal = useCallback(
     (orderId) => {
-      // console.log("delete orderId=", orderId);
       const updatedOrder =
         orderData.find((order) => order.id === orderId) ?? {};
       setEditProduct(updatedOrder);
@@ -93,47 +87,16 @@ export default function OrderListPage() {
   const handleOpenOrderModalWithValue = useCallback(
     (mode, orderId = null) => {
       if (mode === "edit") {
-        // console.log(
-        //   "edit=",
-        //   orderData.find((order) => order.id === orderId) ?? {}
-        // );
         let temp = orderData.find((order) => order.id === orderId);
-        // let products = temp.products;
-        // const filteredProducts = Object.keys(products).reduce((acc, key) => {
-        //   const { id, product_id, qty } = products[key];
-        //   acc[key] = { id, product_id, qty };
-        //   return acc;
-        // }, {});
-        // console.log("filteredProducts=", filteredProducts);
         let products = { data: temp };
-        // let tempx = {
-        //   data: {
-        //     create_at: temp.create_at,
-        //     is_paid: temp.is_paid,
-        //     message: temp.message,
-        //     products: filteredProducts,
-        //     user: {
-        //       address: temp.user.address,
-        //       email: temp.user.email,
-        //       name: temp.user.name,
-        //       tel: temp.user.tel,
-        //     },
-        //     num: temp.num,
-        //   },
-        // };
         setEditProduct(products);
         setModalMode(mode);
         setIsEditModalOpen(true);
         editOrderId.current = orderId;
       } else if (orderId && mode === "view") {
-        // console.log("orderId=", orderId);
         setEditProduct(
           () => orderData.find((order) => order.id === orderId) ?? {}
         );
-        // console.log(
-        //   "orderData=",
-        //   orderData.find((order) => order.id === orderId)
-        // );
         setModalMode(mode);
         setIsViewModalOpen(true);
       }
@@ -222,7 +185,6 @@ export default function OrderListPage() {
           editProduct={editProduct}
         />
       </ToastContext.Provider>
-      <Toast2 />
     </>
   );
 }

@@ -6,14 +6,10 @@ import router from "./router";
 import { Provider } from "react-redux";
 import store from "./store";
 import { Toast2 } from "./component/common";
-// import App from "./App.jsx";
 
 createRoot(document.getElementById("root")).render(
-  // <StrictMode>
   <Provider store={store}>
     <RouterProvider router={router} />
     <Toast2 />
-    {/* <App />  
-</StrictMode>  */}
   </Provider>
 );

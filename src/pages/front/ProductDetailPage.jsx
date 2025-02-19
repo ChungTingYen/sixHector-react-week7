@@ -1,25 +1,27 @@
 import { useEffect, useState,useRef } from "react";
 import { useParams } from "react-router-dom";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 import ReactLoading from "react-loading";
 import { apiService } from "../../apiService/apiService";
-import { setToastContent } from "../../utils/utils";
-import { toastInfo } from "../../data/dataModel";
 import { Modal } from "../../component/common";
-import { Toast } from '../../component/common';
 const APIPath = import.meta.env.VITE_API_PATH;
+import 'react-lazy-load-image-component/src/effects/blur.css'; // 引入模糊效果的 CSS
+import PlaceholderImage from '../../img/loading.jpg'; 
+import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useDispatch } from "react-redux";
 export default function ProductDetailPage() {
   const { id: productId } = useParams();
   const [product, setProduct] = useState({});
   const [qtySelect, setQtySelect] = useState(1);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
-  const [isShowToast,setIsShowToast] = useState(false);
   const modalRef = useRef(null);
+  const dispatch = useDispatch();
+
   const handleImageClick = (imageSrc) => {
     modalRef.current.setModalImage(imageSrc);
     modalRef.current.open();
   };
   const getProductById = async () => {
-    // setIsLoading(true);
     try {
       const {
         data: { product, success, message },
@@ -27,9 +29,7 @@ export default function ProductDetailPage() {
       setProduct(product);
     } catch (error) {
       console.log(error);
-    } finally {
-      //   setIsLoading(false);
-    }
+    } 
   };
   const addProductTocart = async () => {
     setIsButtonLoading(true);
@@ -41,12 +41,22 @@ export default function ProductDetailPage() {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`,postData);
-      // setReload(true);
-      // closeProductModal();
-      setToastContent(setIsShowToast,toastInfo,"執行完成", "success");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          text:"加入完成",
+          type:"success",
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
-      setToastContent(setIsShowToast,toastInfo,"執行失敗", "error");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          text:"加入失敗",
+          type:"error",
+          isShowToast:true
+        }
+      }));
     } finally {
       setIsButtonLoading(false);
     }
@@ -59,10 +69,15 @@ export default function ProductDetailPage() {
       <div className="container p-5">
         <div className="row">
           <div className="col-6">
-            <img
+            {/* <img */}
+            <LazyLoadImage
               className="img-fluid"
               src={product.imageUrl}
               alt={product.title}
+              placeholderSrc={PlaceholderImage}
+              effect="blur" // 可選，添加模糊效果
+              width="100%"
+              height="400%"
             />
           </div>
           <div className="col-6">
@@ -105,34 +120,34 @@ export default function ProductDetailPage() {
             </div>
           </div>
         </div>
-        <h5 className="mt-3">更多圖片：</h5>
-        <div className="d-flex flex-wrap">
-          { product.imagesUrl && product.imagesUrl
-            .filter((item) => item != "")
-            .map((image, index) => (
-              <img
-                key={index}
-                src={image}
-                className="card-img-top primary-image me-2 mb-1"
-                alt={`更多圖片${index}`}
-                style={{
-                  width: "250px",
-                  height: "250px",
-                  objectFit: "cover",
-                  cursor: "pointer", // 這裡設置光標為手指圖樣
-                }}
-                onClick={() => handleImageClick(image)}
-              />
-            
-            ))}
+        <div className="row">
+          <div className="col-12">
+            <h5 className="mt-3">更多圖片：</h5>
+            <div className="d-flex flex-wrap">
+              { product.imagesUrl && product.imagesUrl
+                .filter((item) => item != "")
+                .map((image, index) => (
+                  // <img
+                  <LazyLoadImage
+                    key={index}
+                    src={image}
+                    className="card-img-top primary-image me-2 mb-1"
+                    alt={`更多圖片${index}`}
+                    style={{
+                      width: "250px",
+                      height: "250px",
+                      objectFit: "cover",
+                      cursor: "pointer", // 這裡設置光標為手指圖樣
+                    }}
+                    onClick={() => handleImageClick(image)}
+                    placeholderSrc={PlaceholderImage}
+                    effect="blur" // 可選，添加模糊效果
+                  />
+                ))}
+            </div>
+          </div>
         </div>
       </div>
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        isShowToast={isShowToast}
-        setIsShowToast={setIsShowToast}
-      />
       <Modal
         ref={modalRef}
         modalBodyText="商品放大圖"

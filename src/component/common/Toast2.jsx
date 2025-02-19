@@ -19,15 +19,11 @@ const ToastComponent = () => {
     }
   }, []);
   const toastSlice = useSelector((state) => {
-    // console.log("state:", state);
     return state.toastAtStore.toastInfo;
   });
 
   useEffect(() => {
-    // console.log("toast2:", toastSlice);
-    // console.log("toast2  isShowToast:", toastSlice.isShowToast);
     if (toastSlice.isShowToast) {
-      // console.log("toast open");
       showToast();
     }
   }, [toastSlice.isShowToast]);
@@ -50,7 +46,7 @@ const ToastComponent = () => {
         ref={toastDivRef}
       >
         <div className="toast-body d-flex">
-          {toastSlice.toastText}
+          {toastSlice.text}
           <button
             type="button"
             className="btn-close ms-auto flex-shrink-0"

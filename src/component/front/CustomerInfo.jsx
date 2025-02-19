@@ -3,7 +3,8 @@ import { useForm } from "react-hook-form";
 import { apiService } from "../../apiService/apiService";
 import { registerRules } from "../../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
-
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 const Input = (props)=>{
   const { label,id,name,type,placeholder,register,rules,errors } = props;
   return (<>
@@ -27,8 +28,8 @@ const Input = (props)=>{
 };
 
 const CustomerInfo = (props) => {
-  // const { setIsLoading, setReload, setToastContent } = useLoading();
-  const { setIsLoading,setToastContent,setReload } = props;
+  const { setIsLoading,setReload } = props;
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -61,12 +62,23 @@ const CustomerInfo = (props) => {
         data: { total, orderId, success, message },
       } = await apiService.axiosPost(`/api/${APIPath}/order`, userInfo);
       reset();
-      // setReload(true);
-      setToastContent("執行完成", "success");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:'danger',
+          text:'填寫完成',
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
       alert(error);
-      setToastContent("執行失敗", "error");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:'danger',
+          text:'填寫失敗',
+          isShowToast:true
+        }
+      }));
     } finally {
       setIsLoading(false);
       setReload(true);
@@ -74,9 +86,7 @@ const CustomerInfo = (props) => {
   };
   return (
     <div className="my-5 row justify-content-center">
-
       <p className="fw-bold text-center display-6 text-primary mt-2">請輸入訂購人資料</p>
-     
       <form className="col-md-6" onSubmit={onSubmit}>
         <Input label='Email' id='email' name='email' type='email' placeholder="請輸入 Email" register={register} 
           rules={registerRules.email}

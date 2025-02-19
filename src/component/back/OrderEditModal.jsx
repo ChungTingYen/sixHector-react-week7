@@ -57,52 +57,6 @@ function OrderEditModal2(props) {
   ];
   const ProductDetailModalRef = useRef(null);
   const { setProductDetailModalType } = useToast();
-  // useEffect(() => {
-  //   console.log("edit");
-  // });
-  // const handleEditDataChange = (e, key = null) => {
-  //   const { name, type, value, checked } = e.target;
-  //   let temp = orderDefaultValue;
-  //   if (key !== null) {
-  //     temp = {
-  //       ...modalOrder,
-  //       data: {
-  //         ...modalOrder.data,
-  //         products: {
-  //           ...modalOrder.data.products,
-  //           [key]: {
-  //             ...modalOrder.data.products[key],
-  //             qty: parseInt(value) <= 0 ? 1 : parseInt(value), // 將 value 替換為你想要設定的新數量
-  //           },
-  //         },
-  //       },
-  //     };
-  //   } else if (name === "is_paid") {
-  //     temp = {
-  //       ...modalOrder,
-  //       data: {
-  //         ...modalOrder.data,
-  //         is_paid: checked,
-  //       },
-  //     };
-  //   } else {
-  //     temp = {
-  //       ...modalOrder,
-  //       data: {
-  //         ...modalOrder.data,
-  //         user: {
-  //           ...modalOrder.data.user,
-  //           [name]: value,
-  //         },
-  //       },
-  //     };
-  //   }
-  //   // if (type === "number") tempValue = Number(value);
-  //   // else if (type === "checkbox") tempValue = checked;
-  //   // else tempValue = value;
-  //   // console.log("temp=", temp);
-  //   setModalOrder(temp);
-  // };
   const handleEditDataChange = (e, key = null) => {
     const { name, type, value, checked } = e.target;
     let temp = orderDefaultValue;
@@ -175,7 +129,7 @@ function OrderEditModal2(props) {
         setIsShowToastSlice({
           toastInfo: {
             type: "primary",
-            toastText: "更新完成",
+            text: "更新完成",
             isShowToast: true,
           },
         })

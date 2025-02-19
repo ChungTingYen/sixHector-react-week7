@@ -3,17 +3,16 @@ import { useRef, useEffect, useState } from "react";
 import ReactLoading from "react-loading";
 import { apiService } from "../../apiService/apiService";
 import { Modal } from "bootstrap";
-// import { useLoading } from "../component/LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 const ProductModal = (props) => {
   const {
     tempProduct,
     setIsProductModalOpen,
     isProductModalOpen,
-    // setReload,
-    setToastContent,
   } = props;
-  // const { setReload, setToastContent } = useLoading();
+  const disptch = useDispatch();
   const productModalRef = useRef(null);
   const [qtySelect, setQtySelect] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +21,6 @@ const ProductModal = (props) => {
     modalInstance.hide();
     setIsProductModalOpen(false);
     setQtySelect(1);
-    // setReload(true);
   };
   const openProductModal = () => {
     const modalInstance = Modal.getInstance(productModalRef.current);
@@ -38,12 +36,22 @@ const ProductModal = (props) => {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`,postData);
-      // setReload(true);
-      // closeProductModal();
-      setToastContent("執行完成", "success");
+      disptch(setIsShowToastSlice({
+        toastInfo:{
+          type:'success',
+          text:'執行完成',
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
-      setToastContent("執行失敗", "error");
+      disptch(setIsShowToastSlice({
+        toastInfo:{
+          type:'error',
+          text:'執行失敗',
+          isShowToast:true
+        }
+      }));
     } finally {
       setIsLoading(false);
     }

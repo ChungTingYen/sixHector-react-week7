@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import { apiService } from "../../apiService/apiService";
-// import { useLoading } from "./LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 const Carts = (props) => {
-  const { cart, handleDeleteCart,setIsLoading,setReload,setToastContent } = props;
-  // const { setIsLoading, setReload, setToastContent } = useLoading();
+  const { cart, handleDeleteCart,setIsLoading,setReload } = props;
+  const dispatch = useDispatch();
   const handleIncreDecreProduct = async (cartId, type) => {
     setIsLoading(true);
     try {
@@ -16,10 +17,22 @@ const Carts = (props) => {
       };
       await apiService.axiosPut(`/api/${APIPath}/cart/${cartId}`, putData);
       setReload(true);
-      setToastContent(`${type === '+' ? '增加商品數量完成' : '減少商品數量完成'}`, "success");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:"warning",
+          text:`${type === '+' ? '增加商品數量完成' : '減少商品數量完成'}`,
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
-      setToastContent("數量變更失敗", "error");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:"warning",
+          text:'數量變更失敗',
+          isShowToast:true
+        }
+      }));
       alert(error);
     } finally {
       setIsLoading(false);

@@ -37,7 +37,7 @@ export const orderDefaultValue =
 export const toastSliceDefaultValue = {
   toastInfo:
   {
-    toastText: '',
+    text: '',
     type: '',
     isShowToast: false,
   }

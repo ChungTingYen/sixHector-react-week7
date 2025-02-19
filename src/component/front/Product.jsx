@@ -2,11 +2,12 @@
 import { Link } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 
-// import { useLoading } from "./LoadingContext";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useDispatch } from "react-redux";
+import { setIsShowToastSlice } from "../../slice/toastSlice";
 const Product = (props) => {
-  const { product, handleSeeMore, setIsLoading, setToastContent } = props;
-  // const { setReload, setIsLoading, setToastContent } = useLoading();
+  const { product, handleSeeMore, setIsLoading } = props;
+  const dispatch = useDispatch();
   const atHandleSeeMore = () => {
     handleSeeMore(product.id);
   };
@@ -20,11 +21,22 @@ const Product = (props) => {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`, postData);
-      // setReload(true);
-      setToastContent("執行完成", "success");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:'success',
+          text:'加入完成',
+          isShowToast:true
+        }
+      }));
     } catch (error) {
       console.log(error);
-      setToastContent("執行失敗", "error");
+      dispatch(setIsShowToastSlice({
+        toastInfo:{
+          type:'error',
+          text:'加入失敗',
+          isShowToast:true
+        }
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -56,36 +68,6 @@ const Product = (props) => {
       <td>
         <del className="h6">原價 {product.origin_price} 元</del>
         <div className="h5 text-danger">特價 {product.price} 元</div>
-      </td>
-      <td>
-        {/* <div className="btn-group btn-group-sm">
-          <button
-            onClick={atHandleSeeMore}
-            type="button"
-            className="btn btn-outline-secondary"
-          >
-            查看更多(Modal)
-          </button>
-          <Link
-            to={`/product/${product.id}`}
-            className="btn btn-outline-secondary"
-          >
-            查看更多(別頁)
-          </Link>
-          <Link
-            to={`/products/productBySide/${product.id}`}
-            className="btn btn-outline-secondary"
-          >
-            查看更多(右側)
-          </Link>
-          <button
-            type="button"
-            className="btn btn-outline-danger"
-            onClick={handleAddProductToCart}
-          >
-            加到購物車
-          </button>
-        </div> */}
       </td>
     </tr>
     <tr>

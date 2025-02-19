@@ -10,7 +10,7 @@ export default function CustomerInfoWithNoCart(){
         if (prev === 0) {
           clearInterval(interval);
           navigate("/products");
-          return; 
+          return prev; 
         }
         return prev - 1;
       });

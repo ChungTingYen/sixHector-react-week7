@@ -150,8 +150,8 @@ export default function ProductListsPage() {
       dispatch(
         setIsShowToastSlice({
           toastInfo: {
+            text: "成功上傳!",
             type: "success",
-            toastText: "成功上傳!",
             isShowToast: true,
           },
         })
@@ -173,7 +173,7 @@ export default function ProductListsPage() {
         setIsShowToastSlice({
           toastInfo: {
             type: "success",
-            toastText: "成功上傳!",
+            text: "成功上傳!",
             isShowToast: true,
           },
         })
@@ -194,7 +194,7 @@ export default function ProductListsPage() {
           setIsShowToastSlice({
             toastInfo: {
               type: "danger",
-              toastText: "刪除完成!",
+              text: "刪除完成!",
               isShowToast: true,
             },
           })
@@ -384,7 +384,6 @@ export default function ProductListsPage() {
           setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
           editProduct={editProduct}
         />
-        {/* <Toast2 /> */}
       </ToastContext.Provider>
     </>
   );

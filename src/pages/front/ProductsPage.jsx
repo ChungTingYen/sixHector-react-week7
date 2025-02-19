@@ -2,8 +2,6 @@ import { useEffect, useState,useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 import { Product, LoadingOverlay, ProductModal } from "../../component/front";
-import { Toast } from '../../component/common';
-import { toastInfo } from "../../data/dataModel";
 import { tempProductDefaultValue } from "../../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function ProductsPage() {
@@ -11,7 +9,6 @@ export default function ProductsPage() {
   const [tempProduct, setTempProduct] = useState(tempProductDefaultValue);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowToast, setIsShowToast] = useState(false);
 
   const openProductDetailModal = () => {
     setIsProductModalOpen(true);
@@ -21,11 +18,6 @@ export default function ProductsPage() {
     setTempProduct(temp);
     openProductDetailModal();
   },[products]);
-  const setToastContent = (toastText, type) => {
-    setIsShowToast(true);
-    toastInfo.toastText = toastText;
-    toastInfo.type = type;
-  };
   const getProducts = async () => {
     setIsLoading(true);
     try {
@@ -63,7 +55,6 @@ export default function ProductsPage() {
                     handleSeeMore={handleSeeMore}
                     product={product}
                     setIsLoading={setIsLoading}
-                    setToastContent={setToastContent}
                   ></Product>
                 ))}
               </tbody>
@@ -80,14 +71,6 @@ export default function ProductsPage() {
         tempProduct={tempProduct}
         isProductModalOpen={isProductModalOpen}
         setIsProductModalOpen={setIsProductModalOpen}
-        setIsLoading={setIsLoading}
-        setToastContent={setToastContent}
-      />
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        isShowToast={isShowToast}
-        setIsShowToast={setIsShowToast}
       />
     </>
   );

@@ -1,8 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useRef, useState, useEffect, Fragment } from "react";
 import { Modal } from "bootstrap";
-// import { apiServiceAdmin } from "../../apiService/apiService";
-// import * as utils from "../../utils/utils";
 function OrderEditModal(props) {
   const editModalDivRef = useRef();
   const { editProduct, setModalMode, isModalOpen, setIsModalOpen } = props;
@@ -28,7 +26,7 @@ function OrderEditModal(props) {
     if (isModalOpen) {
       if (Object.keys(editProduct).length > 0) setModalProduct(editProduct);
       openEditModal();
-      console.log(editProduct);
+      // console.log(editProduct);
     }
   }, [isModalOpen, editProduct]);
 

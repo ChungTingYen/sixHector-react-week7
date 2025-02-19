@@ -30,7 +30,6 @@ export default function OrderDeleteModal(props) {
   };
   const deleteProductInModal = async () => {
     if (editProduct?.id === null) return;
-    // setProductDetailModalType("deleting");
     closeDeleteModal();
     utils.modalStatus(ProductDetailModalRef, "刪除中", null, false);
     try {
@@ -44,7 +43,7 @@ export default function OrderDeleteModal(props) {
         setIsShowToastSlice({
           toastInfo: {
             toastText: "完成刪除!",
-            type: "dark",
+            type: "primary",
             isShowToast: true,
           },
         })

@@ -1,19 +1,11 @@
 import { useState,useEffect } from "react";
-import { toastInfo } from "../../data/dataModel";
 import { apiService } from "../../apiService/apiService";
 import { LoadingOverlay,CustomerInfo,CustomerInfoWithNoCart } from '../../component/front';
-import{ Toast } from '../../component/common';
 const APIPath = import.meta.env.VITE_API_PATH;
 export default function CustomerInfoPage(){
   const [isLoading, setIsLoading] = useState(true);
-  const [isShowToast, setIsShowToast] = useState(false);
   const [cart, setCart] = useState({});
   const [reload,setReload] = useState(true);
-  const setToastContent = (toastText, type) => {
-    setIsShowToast(true);
-    toastInfo.toastText = toastText;
-    toastInfo.type = type;
-  };
   useEffect(()=>{
     const getCart = async () => {
       try {
@@ -36,17 +28,10 @@ export default function CustomerInfoPage(){
     <>
       <div className="container">
         {cart.carts?.length > 0 ? (
-          <CustomerInfo setIsLoading={setIsLoading} setToastContent={setToastContent} 
-            setReload={setReload}/>
+          <CustomerInfo setIsLoading={setIsLoading} setReload={setReload}/>
         ) : <CustomerInfoWithNoCart/>}
       </div>
       {isLoading && <LoadingOverlay />}
-      <Toast
-        toastText={toastInfo.toastText}
-        type={toastInfo.type}
-        isShowToast={isShowToast}
-        setIsShowToast={setIsShowToast}
-      />
     </>
   );
 }
