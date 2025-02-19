@@ -3,15 +3,9 @@
 import { useEffect, useState, useRef, memo } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import * as utils from "../../utils/utils";
-import { tempProductDefaultValue } from "../../data/defaultValue";
-import { ProductDetailModal } from "../common";
-import { useToast } from "./ToastContext";
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
-
 const APIPath = import.meta.env.VITE_API_PATH;
-
+import { tempProductDefaultValue } from "../../data/defaultValue";
+import { useToast,useFlashModal } from '../../hook';
 const ProductEditModal = (props) => {
   const {
     editProduct,
@@ -21,12 +15,11 @@ const ProductEditModal = (props) => {
     isProductEditModalOpen,
     setIsProductEditModalOpen,
   } = props;
-  const dispatch = useDispatch();
-  const { setProductDetailModalType } = useToast();
+  const updateToast = useToast();
+  const updateFlashModal = useFlashModal();
   const [modalProduct, setModalProduct] = useState(editProduct);
   const editModalDivRef = useRef(null);
   const uploadRef = useRef(null);
-  const ProductDetailModalRef = useRef(null);
 
   useEffect(() => {
     setModalProduct(editProduct);
@@ -77,8 +70,7 @@ const ProductEditModal = (props) => {
     modalInstance.show();
   };
   const handleImgUpload = async (e) => {
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal('loading',true,);
     try {
       const formData = new FormData();
       formData.append("file-to-upload", e.target.files[0]);
@@ -91,7 +83,7 @@ const ProductEditModal = (props) => {
     } catch (error) {
       console.log(error);
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal('closing',false);
     }
   };
   const handleEditDataChange = (e) => {
@@ -139,8 +131,7 @@ const ProductEditModal = (props) => {
       alert("未取得product ID");
       return;
     }
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal('loading',true);
     try {
       const result = await implementEditProduct(modalMode, modalProduct);
       if (result) {
@@ -148,22 +139,14 @@ const ProductEditModal = (props) => {
         getProductData();
         setModalProduct(tempProductDefaultValue);
         uploadRef.current.value = "";
-        dispatch(
-          setIsShowToastSlice({
-            toastInfo: {
-              toastText: modalMode === "create" ? "新增完成" : "更新完成",
-              type: "warning",
-              isShowToast: true,
-            },
-          })
-        );
+        updateToast(modalMode === "create" ? "新增完成" : "更新完成","warning",true);
       } else {
         alert(modalMode === "create" ? "新增失敗:" : "更新失敗:");
       }
     } catch (error) {
       console.log(error);
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal('closing',false);
     }
   };
   return (
@@ -453,12 +436,6 @@ const ProductEditModal = (props) => {
           </div>
         </div>
       </div>
-      <ProductDetailModal
-        ref={ProductDetailModalRef}
-        modalBodyText="訊息"
-        modalSize={{ width: "300px", height: "200px" }}
-        modalImgSize={{ width: "300px", height: "120px" }}
-      />
     </>
   );
 };

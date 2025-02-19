@@ -42,3 +42,10 @@ export const toastSliceDefaultValue = {
     isShowToast: false,
   }
 };
+
+export const flashModalDefaultValue = {
+  flashModalInfo:{
+    isShowFlashModal:false,
+    text:''
+  }
+};

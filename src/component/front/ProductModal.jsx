@@ -4,15 +4,14 @@ import ReactLoading from "react-loading";
 import { apiService } from "../../apiService/apiService";
 import { Modal } from "bootstrap";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useToast } from '../../hook';
 const ProductModal = (props) => {
   const {
     tempProduct,
     setIsProductModalOpen,
     isProductModalOpen,
   } = props;
-  const disptch = useDispatch();
+  const updateToast = useToast();
   const productModalRef = useRef(null);
   const [qtySelect, setQtySelect] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,22 +35,10 @@ const ProductModal = (props) => {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`,postData);
-      disptch(setIsShowToastSlice({
-        toastInfo:{
-          type:'success',
-          text:'執行完成',
-          isShowToast:true
-        }
-      }));
+      updateToast('執行完成','success',true);
     } catch (error) {
       console.log(error);
-      disptch(setIsShowToastSlice({
-        toastInfo:{
-          type:'error',
-          text:'執行失敗',
-          isShowToast:true
-        }
-      }));
+      updateToast('執行失敗','error',true);
     } finally {
       setIsLoading(false);
     }
@@ -107,7 +94,6 @@ const ProductModal = (props) => {
                 <div className="col-4">
                   <h5 className="mt-3">更多圖片：</h5>
                   <div className="d-flex flex-wrap">
-                    {/* {JSON.stringify(product.imagesUrl,null,2)} */}
                     {tempProduct.imagesUrl && tempProduct.imagesUrl
                       .filter((item) => item != "")
                       .map((image, index) => (
@@ -122,7 +108,6 @@ const ProductModal = (props) => {
                             objectFit: "cover",
                             overflow:"hidden"
                           }}
-                        // onClick={() => handleImageClick(image)}
                         />
                       ))}
                   </div>

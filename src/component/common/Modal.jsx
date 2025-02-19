@@ -20,7 +20,6 @@ const Modal = forwardRef((props, ref) => {
   }, []);
   const closeModal = () => {
     modalRef.current.hide();
-    // restoreStyle();
   };
   const openModal = () => {
     modalRef.current.show();

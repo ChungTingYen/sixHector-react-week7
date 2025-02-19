@@ -10,7 +10,7 @@ const LoadingOverlay = ()=>{
         zIndex: 999,
       }}
     >
-      <ReactLoading type="spin" color="black" width="4rem" height="4rem" />
+      <ReactLoading type="spin" color="grey" width="4rem" height="4rem" />
     </div>
   );
 };

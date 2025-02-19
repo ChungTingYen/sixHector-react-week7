@@ -2,13 +2,8 @@
 import { useEffect, useRef, memo } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import * as utils from "../../utils/utils";
-import { ProductDetailModal } from "../common";
-import { useToast } from "./ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
-
+import { useFlashModal,useToast } from '../../hook';
 const ProductDeleteModal = (props) => {
   const {
     editProduct,
@@ -17,11 +12,9 @@ const ProductDeleteModal = (props) => {
     setIsProductDeleteModalOpen,
     getProductData,
   } = props;
-  const { setProductDetailModalType } = useToast();
   const deleteModalDivRef = useRef(null);
-  const ProductDetailModalRef = useRef(null);
-
-  const dispatch = useDispatch();
+  const updateFlashModal = useFlashModal();
+  const updateToast = useToast();
   useEffect(() => {
     if (deleteModalDivRef.current) {
       new Modal(deleteModalDivRef.current, { backdrop: false });
@@ -44,38 +37,23 @@ const ProductDeleteModal = (props) => {
   const deleteProductInModal = async () => {
     if (editProduct?.id === null) return;
     closeDeleteModal();
-    setProductDetailModalType("deleting");
-    utils.modalStatus(ProductDetailModalRef, "刪除中", null, false);
+    updateFlashModal("deleting",true);
     try {
       await apiServiceAdmin.axiosDeleteProduct(
         `/api/${APIPath}/admin/product/${editProduct.id}`
       );
       setModalMode(null);
       getProductData();
-      dispatch(
-        setIsShowToastSlice({
-          toastInfo: {
-            toastText: "完成刪除!",
-            type: "warning",
-            isShowToast: true,
-          },
-        })
-      );
+      updateToast("完成刪除!","warning",true);
     } catch (error) {
       console.error("刪除產品時發生錯誤：", error);
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal("closing",false);
       closeDeleteModal();
     }
   };
   return (
     <>
-      <ProductDetailModal
-        ref={ProductDetailModalRef}
-        modalBodyText="訊息"
-        modalSize={{ width: "300px", height: "200px" }}
-        modalImgSize={{ width: "300px", height: "120px" }}
-      />
       <div
         className="modal fade"
         id="delProductModal"

@@ -26,7 +26,6 @@ function OrderEditModal(props) {
     if (isModalOpen) {
       if (Object.keys(editProduct).length > 0) setModalProduct(editProduct);
       openEditModal();
-      // console.log(editProduct);
     }
   }, [isModalOpen, editProduct]);
 

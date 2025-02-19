@@ -6,13 +6,16 @@ import {
   Orders,
   OrderViewModal,
   OrderEditModal,
-  ProductDetailModal,
+  // 舊context寫法，暫保留
+  // ProductDetailModal,
   OrderDeleteModal,
 } from "../../component/back";
-import { Toast2 } from "../../component/common";
-import * as utils from "../../utils/utils";
-import { ToastContext } from "../../component/back/ToastContext";
+// 舊context寫法，暫保留
+// import * as utils from "../../utils/utils";
+// import { ToastContext } from "../../component/back/ToastContext";
 const APIPath = import.meta.env.VITE_API_PATH;
+import { useFlashModal, } from '../../hook';
+
 export default function OrderListPage() {
   const navigate = useNavigate();
   const [orderData, setOrderData] = useState([]);
@@ -21,22 +24,27 @@ export default function OrderListPage() {
   const [modalMode, setModalMode] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [productDetailModalType, setProductDetailModalType] = useState("");
-  const ProductDetailModalRef = useRef(null);
+  // 舊context寫法，暫保留
+  // const [productDetailModalType, setProductDetailModalType] = useState("");
+  // const ProductDetailModalRef = useRef(null);
+  // const toastContextValue = useMemo(
+  //   () => ({
+  //     setProductDetailModalType,
+  //     productDetailModalType,
+  //   }),
+  //   [setProductDetailModalType, productDetailModalType]
+  // );
+
   const [isProductDeleteModalOpen, setIsProductDeleteModalOpen] =
     useState(false);
   const editOrderId = useRef(null);
   const [isLoging, setIsLogin] = useState(false);
-  const toastContextValue = useMemo(
-    () => ({
-      setProductDetailModalType,
-      productDetailModalType,
-    }),
-    [setProductDetailModalType, productDetailModalType]
-  );
+  const updateFlashModal = useFlashModal();
   const handleCheckLogin = async () => {
-    setProductDetailModalType("checking");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    // 舊context寫法，暫保留
+    // setProductDetailModalType("checking");
+    // utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("checking",true);
     try {
       await apiServiceAdmin.axiosPost("/api/user/check", {});
       setIsLogin(true);
@@ -44,7 +52,9 @@ export default function OrderListPage() {
       console.log(error);
       navigate("/login");
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal("closing",false);
+      // 舊context寫法，暫保留
+      // ProductDetailModalRef.current.close();
     }
   };
   const handleGetOrders = async () => {
@@ -52,9 +62,7 @@ export default function OrderListPage() {
       await getOrderData();
     } catch (error) {
       console.log(error);
-    } finally {
-      ProductDetailModalRef.current.close();
-    }
+    } 
   };
   const getOrderData = useCallback(async (page = 1) => {
     try {
@@ -71,7 +79,6 @@ export default function OrderListPage() {
     } catch (error) {
       console.log(error);
     } finally {
-      ProductDetailModalRef.current.close();
       editOrderId.current = null;
     }
   }, []);
@@ -159,32 +166,33 @@ export default function OrderListPage() {
         isModalOpen={isViewModalOpen}
         setIsModalOpen={setIsViewModalOpen}
       />
+      <OrderDeleteModal
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getData={getOrderData}
+        isProductDeleteModalOpen={isProductDeleteModalOpen}
+        setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
+        editProduct={editProduct}
+      />
+      <OrderEditModal
+        editProduct={editProduct}
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getData={getOrderData}
+        isModalOpen={isEditModalOpen}
+        setIsModalOpen={setIsEditModalOpen}
+        editOrderId={editOrderId}
+      />
 
+      {/* 舊context寫法，暫保留
       <ToastContext.Provider value={toastContextValue}>
-        <OrderEditModal
-          editProduct={editProduct}
-          setModalMode={setModalMode}
-          modalMode={modalMode}
-          getData={getOrderData}
-          isModalOpen={isEditModalOpen}
-          setIsModalOpen={setIsEditModalOpen}
-          editOrderId={editOrderId}
-        />
         <ProductDetailModal
           ref={ProductDetailModalRef}
           modalBodyText="訊息"
           modalSize={{ width: "300px", height: "200px" }}
           modalImgSize={{ width: "300px", height: "120px" }}
         />
-        <OrderDeleteModal
-          setModalMode={setModalMode}
-          modalMode={modalMode}
-          getData={getOrderData}
-          isProductDeleteModalOpen={isProductDeleteModalOpen}
-          setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
-          editProduct={editProduct}
-        />
-      </ToastContext.Provider>
+      </ToastContext.Provider> */}
     </>
   );
 }

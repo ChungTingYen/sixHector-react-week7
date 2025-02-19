@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { apiServiceAdmin } from "../../apiService/apiService";
-import { ToastContext } from "../../component/back/ToastContext";
 import {
   Products,
   ProductEditModal,
@@ -9,14 +8,16 @@ import {
   Pagination,
   AppFunction,
 } from "../../component/back";
-import { ProductDetailModal, Toast2 } from "../../component/common";
 import * as utils from "../../utils/utils";
+//舊context寫法，暫保留
+// import { ToastContext } from "../../component/back/ToastContext";
+// import { ProductDetailModal } from "../../component/common";
 import { tempProductDefaultValue } from "../../data/defaultValue";
 import { productDataAtLocal } from "../../data/productDataAtLocal";
 import { useDebounce } from "@uidotdev/usehooks";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useFlashModal,useToast } from '../../hook';
+
 export default function ProductListsPage() {
   const navigate = useNavigate();
   const [isLoging, setIsLogin] = useState(false);
@@ -30,14 +31,17 @@ export default function ProductListsPage() {
   const [isProductDeleteModalOpen, setIsProductDeleteModalOpen] =
     useState(false);
   const [isProductEditModalOpen, setIsProductEditModalOpen] = useState(false);
-  const [productDetailModalType, setProductDetailModalType] = useState("");
-  const ProductDetailModalRef = useRef(null);
+ 
   const debouncedSearchTerm = useDebounce(category, 1000);
-  const toastContextValue = {
-    setProductDetailModalType,
-    productDetailModalType,
-  };
-  const dispatch = useDispatch();
+  //舊context寫法，暫保留
+  // const ProductDetailModalRef = useRef(null);
+  // const [productDetailModalType, setProductDetailModalType] = useState("");
+  // const toastContextValue = {
+  //   setProductDetailModalType,
+  //   productDetailModalType,
+  // };
+  const updateFlashModal = useFlashModal();
+  const updateToast = useToast();
   const filterData = useMemo(() => {
     return (
       [...productData]
@@ -57,8 +61,7 @@ export default function ProductListsPage() {
     }
   }, [debouncedSearchTerm, isLoging]);
   const handleCheckLogin = async () => {
-    setProductDetailModalType("checking");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal('checking',true);
     try {
       await apiServiceAdmin.axiosPost("/api/user/check", {});
       setIsLogin(true);
@@ -66,17 +69,19 @@ export default function ProductListsPage() {
       console.log(error);
       navigate("/login");
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal('closing',false);
     }
   };
-  const handleGetProducts = async () => {
+  const handleGetProducts = async (type = null) => {
     try {
-      utils.modalStatus(ProductDetailModalRef, "", null, false);
+      if(type)
+        updateFlashModal("loadingData",true);
       await getProductData();
     } catch (error) {
       console.log(error);
     } finally {
-      ProductDetailModalRef.current.close();
+      if(type)
+        updateFlashModal("closing",false);
     }
   };
   const getProductData = useCallback(
@@ -96,9 +101,7 @@ export default function ProductListsPage() {
       } catch (error) {
         console.log(error);
         navigate("/login");
-      } finally {
-        ProductDetailModalRef.current.close();
-      }
+      } 
     },
     [navigate, pageInfo]
   );
@@ -134,8 +137,7 @@ export default function ProductListsPage() {
   );
   //上傳內建資料隨機一項產品
   const handleAddProduct = async () => {
-    setProductDetailModalType("creating");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("creating",true);
     const productIndex = parseInt(Date.now()) % productDataAtLocal.length;
     const temp = { ...productDataAtLocal[productIndex], buyerNumber: 100 };
     const wrapData = {
@@ -147,70 +149,48 @@ export default function ProductListsPage() {
         wrapData
       );
       resProduct.data.success && getProductData();
-      dispatch(
-        setIsShowToastSlice({
-          toastInfo: {
-            text: "成功上傳!",
-            type: "success",
-            isShowToast: true,
-          },
-        })
-      );
+      updateToast("成功上傳!","success",true);
     } catch (error) {
       console.log(error);
     } finally {
-      ProductDetailModalRef.current.close();
+      updateFlashModal("closing",false);
     }
   };
   //上傳全部內建資料產品
   const handleAddAllProducts = async () => {
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("loading",true);
     const results = await utils.AddProductsSequentially(productDataAtLocal);
     setEditProduct(tempProductDefaultValue);
     if (!results.length) {
-      dispatch(
-        setIsShowToastSlice({
-          toastInfo: {
-            type: "success",
-            text: "成功上傳!",
-            isShowToast: true,
-          },
-        })
-      );
+      updateToast("成功上傳!","success",true);
       getProductData();
     } else alert(results.join(","));
-    ProductDetailModalRef.current.close();
+    updateFlashModal("closing",false);
   };
   //刪除第一頁全部產品
   const handleDeleteAllProducts = async () => {
-    setProductDetailModalType("deleting");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    //舊context寫法，暫保留
+    // setProductDetailModalType("deleting");
+    // utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("deleting",true);
     if (productData.length > 0) {
       const results = await utils.deleteProductsSequentially(productData);
       setEditProduct(tempProductDefaultValue);
       if (!results.length) {
-        dispatch(
-          setIsShowToastSlice({
-            toastInfo: {
-              type: "danger",
-              text: "刪除完成!",
-              isShowToast: true,
-            },
-          })
-        );
+        updateToast("刪除完成!","danger",true);
         getProductData();
       } else alert(results.join(","));
     }
-    ProductDetailModalRef.current.close();
+    //舊context寫法，暫保留
+    // ProductDetailModalRef.current.close();
+    updateFlashModal("closing",false);
   };
 
   const handleSearchCategory = (e) => {
     setCategory(e.target.value);
   };
   const getCategoryProducts = async (query) => {
-    setProductDetailModalType("loadingData");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("loadingData",true);
     try {
       const resProduct = await apiServiceAdmin.axiosGetProductDataByConfig(
         `/api/${APIPath}/admin/products`,
@@ -224,7 +204,7 @@ export default function ProductListsPage() {
     } catch (error) {
       console.log("error:", error);
     }
-    ProductDetailModalRef.current.close();
+    updateFlashModal("closing",false);
   };
   return (
     <>
@@ -236,7 +216,7 @@ export default function ProductListsPage() {
             <button
               type="button"
               className="btn btn-warning mx-1"
-              onClick={handleGetProducts}
+              onClick={()=>handleGetProducts('check')}
             >
               更新產品清單
             </button>
@@ -360,31 +340,31 @@ export default function ProductListsPage() {
       ) : (
         <h1>沒有商品或商品載入中</h1>
       )}
-
+      <ProductEditModal
+        editProduct={editProduct}
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getProductData={getProductData}
+        isProductEditModalOpen={isProductEditModalOpen}
+        setIsProductEditModalOpen={setIsProductEditModalOpen}
+      />
+      <ProductDeleteModal
+        setModalMode={setModalMode}
+        modalMode={modalMode}
+        getProductData={getProductData}
+        isProductDeleteModalOpen={isProductDeleteModalOpen}
+        setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
+        editProduct={editProduct}
+      />
+      {/*舊context寫法，暫保留
       <ToastContext.Provider value={toastContextValue}>
-        <ProductDetailModal
+         <ProductDetailModal
           ref={ProductDetailModalRef}
           modalBodyText="訊息"
           modalSize={{ width: "300px", height: "200px" }}
           modalImgSize={{ width: "300px", height: "120px" }}
-        />
-        <ProductEditModal
-          editProduct={editProduct}
-          setModalMode={setModalMode}
-          modalMode={modalMode}
-          getProductData={getProductData}
-          isProductEditModalOpen={isProductEditModalOpen}
-          setIsProductEditModalOpen={setIsProductEditModalOpen}
-        />
-        <ProductDeleteModal
-          setModalMode={setModalMode}
-          modalMode={modalMode}
-          getProductData={getProductData}
-          isProductDeleteModalOpen={isProductDeleteModalOpen}
-          setIsProductDeleteModalOpen={setIsProductDeleteModalOpen}
-          editProduct={editProduct}
-        />
-      </ToastContext.Provider>
+        /> 
+      </ToastContext.Provider>*/}
     </>
   );
 }

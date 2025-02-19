@@ -3,11 +3,10 @@ import { Link } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useToast } from '../../hook';
 const Product = (props) => {
   const { product, handleSeeMore, setIsLoading } = props;
-  const dispatch = useDispatch();
+  const updateToast = useToast();
   const atHandleSeeMore = () => {
     handleSeeMore(product.id);
   };
@@ -21,22 +20,10 @@ const Product = (props) => {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`, postData);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:'success',
-          text:'加入完成',
-          isShowToast:true
-        }
-      }));
+      updateToast('加入完成','success',true);
     } catch (error) {
       console.log(error);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:'error',
-          text:'加入失敗',
-          isShowToast:true
-        }
-      }));
+      updateToast('加入失敗','error',true);
     } finally {
       setIsLoading(false);
     }

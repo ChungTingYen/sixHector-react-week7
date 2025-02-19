@@ -7,15 +7,14 @@ import { Modal } from "../../component/common";
 const APIPath = import.meta.env.VITE_API_PATH;
 import 'react-lazy-load-image-component/src/effects/blur.css'; // 引入模糊效果的 CSS
 import PlaceholderImage from '../../img/loading.jpg'; 
-import { setIsShowToastSlice } from "../../slice/toastSlice";
-import { useDispatch } from "react-redux";
+import { useToast } from "../../hook";
 export default function ProductDetailPage() {
   const { id: productId } = useParams();
   const [product, setProduct] = useState({});
   const [qtySelect, setQtySelect] = useState(1);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
   const modalRef = useRef(null);
-  const dispatch = useDispatch();
+  const updateToast = useToast();
 
   const handleImageClick = (imageSrc) => {
     modalRef.current.setModalImage(imageSrc);
@@ -41,22 +40,10 @@ export default function ProductDetailPage() {
         },
       };
       await apiService.axiosPost(`/api/${APIPath}/cart`,postData);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          text:"加入完成",
-          type:"success",
-          isShowToast:true
-        }
-      }));
+      updateToast("加入完成","success",true);
     } catch (error) {
       console.log(error);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          text:"加入失敗",
-          type:"error",
-          isShowToast:true
-        }
-      }));
+      updateToast("加入失敗","success",true);
     } finally {
       setIsButtonLoading(false);
     }

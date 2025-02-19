@@ -37,25 +37,6 @@ const Product = (props) => {
               {is_enabled ? "啟用" : "未啟用"}
             </span>
           </td>
-         
-          {/* <td> 第二周功能
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={atGetProduct}
-            >
-              細節
-            </button>
-          </td>
-          <td>
-            <button
-              type="button"
-              className="btn btn-danger"
-              onClick={atDeleteProduct}
-            >
-              刪除
-            </button>
-          </td> */}
           <td>
             <div className="d-flex justify-content-end btn-group">
               <button

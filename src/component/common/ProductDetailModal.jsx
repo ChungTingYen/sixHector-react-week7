@@ -34,9 +34,6 @@ const ProductDetailModal = forwardRef((props, ref) => {
       return ".........";
     }
   };
-  // useEffect(() => {
-  //   console.log("detail");
-  // });
   useEffect(() => {
     modalRef1.current = new Modal(modalDivRef1.current);
   }, []);

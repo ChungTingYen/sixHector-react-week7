@@ -3,17 +3,13 @@ import { useRef, useState, useEffect, Fragment, memo } from "react";
 import { Modal } from "bootstrap";
 import { apiServiceAdmin } from "../../apiService/apiService";
 import { orderDefaultValue } from "../../data/defaultValue";
-import { ProductDetailModal } from "../common";
 import { InputField } from ".";
-import * as utils from "../../utils/utils";
-import { useToast } from "./ToastContext";
-// import { toastInfo } from "../../data/dataModel";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
-function OrderEditModal2(props) {
+import { useToast,useFlashModal } from '../../hook';
+function OrderEditModal(props) {
   const editModalDivRef = useRef();
-  const dispatch = useDispatch();
+  const updateToast = useToast();
+  const updateFlashModal = useFlashModal();
   const {
     editProduct,
     setModalMode,
@@ -55,12 +51,10 @@ function OrderEditModal2(props) {
       checked: modalOrder.data?.is_paid,
     },
   ];
-  const ProductDetailModalRef = useRef(null);
-  const { setProductDetailModalType } = useToast();
+
   const handleEditDataChange = (e, key = null) => {
     const { name, type, value, checked } = e.target;
     let temp = orderDefaultValue;
-    console.log("modalOrder:", modalOrder);
     if (key !== null) {
       const newQty = parseInt(value) <= 0 ? 1 : parseInt(value);
       const newProduct = {
@@ -69,7 +63,6 @@ function OrderEditModal2(props) {
         final_total: newQty * modalOrder.data.products[key].product.price,
         total: newQty * modalOrder.data.products[key].product.price,
       };
-      console.log("newProduct=", newProduct);
       const updateProducts = {
         ...modalOrder.data.products,
         [key]: newProduct,
@@ -88,7 +81,6 @@ function OrderEditModal2(props) {
           total: updateTotal,
         },
       };
-      console.log("new products:", temp);
     } else if (name === "is_paid") {
       temp = {
         ...modalOrder,
@@ -116,30 +108,21 @@ function OrderEditModal2(props) {
       alert("未取得order ID");
       return;
     }
-    setProductDetailModalType("loading");
-    utils.modalStatus(ProductDetailModalRef, "", null, false);
+    updateFlashModal("loading",true);
     try {
-      const res = await apiServiceAdmin.axiosPut(
+      await apiServiceAdmin.axiosPut(
         `/api/${APIPath}/admin/order/${editOrderId.current}`,
         modalOrder
       );
       setIsModalOpen(false);
       getData();
-      dispatch(
-        setIsShowToastSlice({
-          toastInfo: {
-            type: "primary",
-            text: "更新完成",
-            isShowToast: true,
-          },
-        })
-      );
+      updateToast("更新完成","primary",true);
     } catch (error) {
       console.log(error);
     } finally {
       closeEditModal();
       setModalOrder(orderDefaultValue);
-      ProductDetailModalRef.current.close();
+      updateFlashModal("closing",false);
     }
   };
   const openEditModal = () => {
@@ -274,13 +257,7 @@ function OrderEditModal2(props) {
           </div>
         </div>
       </div>
-      <ProductDetailModal
-        ref={ProductDetailModalRef}
-        modalBodyText="訊息"
-        modalSize={{ width: "300px", height: "200px" }}
-        modalImgSize={{ width: "300px", height: "120px" }}
-      />
     </>
   );
 }
-export default memo(OrderEditModal2);
+export default memo(OrderEditModal);

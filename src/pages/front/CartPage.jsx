@@ -3,14 +3,13 @@ import { apiService } from "../../apiService/apiService";
 import { Carts,LoadingOverlay } from "../../component/front";
 import { useNavigatePage } from '../../hook';
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
+import{ useToast } from '../../hook';
 export default function CartPage(){
   const [cart, setCart] = useState({});
   const [reload, setReload] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  const dispatch = useDispatch();
+  const updateToast = useToast();
   const navigate = useNavigatePage();
   const handleDeleteCart = useCallback(async (cartId = null) => {
     //如果有cardId就是刪除一個，沒有就是刪除全部
@@ -19,23 +18,11 @@ export default function CartPage(){
     try {
       await apiService.axiosDelete(path);
       setReload(true);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:"light",
-          text:'刪除完成',
-          isShowToast:true
-        }
-      }));
+      updateToast('刪除完成',"light",true);
     } catch (error) {
       console.log(error);
       alert(error);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:"light",
-          text:'刪除失敗',
-          isShowToast:true
-        }
-      }));
+      updateToast('刪除失敗',"light",true);
     } finally {
       setIsLoading(false);
     }

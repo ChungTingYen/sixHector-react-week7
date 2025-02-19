@@ -3,8 +3,7 @@ import { useForm } from "react-hook-form";
 import { apiService } from "../../apiService/apiService";
 import { registerRules } from "../../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useDispatch } from "react-redux";
-import { setIsShowToastSlice } from "../../slice/toastSlice";
+import { useToast } from '../../hook';
 const Input = (props)=>{
   const { label,id,name,type,placeholder,register,rules,errors } = props;
   return (<>
@@ -29,7 +28,7 @@ const Input = (props)=>{
 
 const CustomerInfo = (props) => {
   const { setIsLoading,setReload } = props;
-  const dispatch = useDispatch();
+  const updateToast = useToast();
   const {
     register,
     handleSubmit,
@@ -62,23 +61,11 @@ const CustomerInfo = (props) => {
         data: { total, orderId, success, message },
       } = await apiService.axiosPost(`/api/${APIPath}/order`, userInfo);
       reset();
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:'danger',
-          text:'填寫完成',
-          isShowToast:true
-        }
-      }));
+      updateToast('填寫完成','danger',true);
     } catch (error) {
       console.log(error);
       alert(error);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:'danger',
-          text:'填寫失敗',
-          isShowToast:true
-        }
-      }));
+      updateToast('填寫失敗','danger',true);
     } finally {
       setIsLoading(false);
       setReload(true);
