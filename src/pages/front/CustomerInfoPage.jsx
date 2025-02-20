@@ -1,12 +1,16 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { apiService } from "../../apiService/apiService";
-import { LoadingOverlay,CustomerInfo,CustomerInfoWithNoCart } from '../../component/front';
+import {
+  LoadingOverlay,
+  CustomerInfo,
+  CustomerInfoWithNoCartNavbar,
+} from "../../component/front";
 const APIPath = import.meta.env.VITE_API_PATH;
-export default function CustomerInfoPage(){
+export default function CustomerInfoPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [cart, setCart] = useState({});
-  const [reload,setReload] = useState(true);
-  useEffect(()=>{
+  const [reload, setReload] = useState(true);
+  useEffect(() => {
     const getCart = async () => {
       try {
         const {
@@ -15,21 +19,23 @@ export default function CustomerInfoPage(){
         setCart(data);
       } catch (error) {
         console.log(error);
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
-    if(reload){
+    if (reload) {
       getCart();
       setReload(false);
     }
-  },[reload]);
+  }, [reload]);
   return (
     <>
       <div className="container">
         {cart.carts?.length > 0 ? (
-          <CustomerInfo setIsLoading={setIsLoading} setReload={setReload}/>
-        ) : <CustomerInfoWithNoCart/>}
+          <CustomerInfo setIsLoading={setIsLoading} setReload={setReload} />
+        ) : (
+          <CustomerInfoWithNoCartNavbar />
+        )}
       </div>
       {isLoading && <LoadingOverlay />}
     </>

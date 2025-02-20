@@ -3,31 +3,33 @@ import { useForm } from "react-hook-form";
 import { apiService } from "../../apiService/apiService";
 import { registerRules } from "../../data/data";
 const APIPath = import.meta.env.VITE_API_PATH;
-import { useToast } from '../../hook';
-const Input = (props)=>{
-  const { label,id,name,type,placeholder,register,rules,errors } = props;
-  return (<>
-    <div className="mb-3">
-      <label htmlFor={id} className="form-label">
-        {label}
-      </label>
-      <input
-        id={id}
-        name={name}
-        type={type}
-        className={`form-control ${errors[id] && "is-invalid"}`}
-        placeholder={placeholder}
-        {...register( id, rules )}
-      />
-      {errors[id] && (
-        <p className="text-danger my-2">{errors[id]?.message}</p>
-      )}
-    </div>
-  </>);
+import { useToast } from "../../hook";
+const Input = (props) => {
+  const { label, id, name, type, placeholder, register, rules, errors } = props;
+  return (
+    <>
+      <div className="mb-3">
+        <label htmlFor={id} className="form-label">
+          {label}
+        </label>
+        <input
+          id={id}
+          name={name}
+          type={type}
+          className={`form-control ${errors[id] && "is-invalid"}`}
+          placeholder={placeholder}
+          {...register(id, rules)}
+        />
+        {errors[id] && (
+          <p className="text-danger my-2">{errors[id]?.message}</p>
+        )}
+      </div>
+    </>
+  );
 };
 
 const CustomerInfo = (props) => {
-  const { setIsLoading,setReload } = props;
+  const { setIsLoading, setReload } = props;
   const updateToast = useToast();
   const {
     register,
@@ -40,10 +42,11 @@ const CustomerInfo = (props) => {
       name: "",
       email: "",
       tel: "",
-      address:""
-    },mode:'onTouched' 
+      address: "",
+    },
+    mode: "onTouched",
   });
-  
+
   const onSubmit = handleSubmit((data) => {
     const { message, ...user } = data;
     const userInfo = {
@@ -61,32 +64,62 @@ const CustomerInfo = (props) => {
         data: { total, orderId, success, message },
       } = await apiService.axiosPost(`/api/${APIPath}/order`, userInfo);
       reset();
-      updateToast('填寫完成','danger',true);
+      updateToast("填寫完成", "danger", true);
     } catch (error) {
       console.log(error);
       alert(error);
-      updateToast('填寫失敗','danger',true);
+      updateToast("填寫失敗", "danger", true);
     } finally {
       setIsLoading(false);
       setReload(true);
     }
   };
   return (
-    <div className="my-5 row justify-content-center">
-      <p className="fw-bold text-center display-6 text-primary mt-2">請輸入訂購人資料</p>
-      <form className="col-md-6" onSubmit={onSubmit}>
-        <Input label='Email' id='email' name='email' type='email' placeholder="請輸入 Email" register={register} 
+    <div className="my-2  row justify-content-center border border-0 border-start border-secondary border-2">
+      <p className="fw-bold text-center display-6 text-primary">
+        請輸入訂購人資料
+      </p>
+      <form className="col-md-8" onSubmit={onSubmit}>
+        <Input
+          label="Email"
+          id="email"
+          name="email"
+          type="email"
+          placeholder="請輸入 Email"
+          register={register}
           rules={registerRules.email}
-          errors={errors} />
-        <Input label='收件人姓名' id='name' name='name' type='text' placeholder="請輸入姓名" register={register} 
+          errors={errors}
+        />
+        <Input
+          label="收件人姓名"
+          id="name"
+          name="name"
+          type="text"
+          placeholder="請輸入姓名"
+          register={register}
           rules={registerRules.name}
-          errors={errors} />
-        <Input label='收件人電話' id='tel' type='tel' name='tel' placeholder="請輸入電話" register={register} 
+          errors={errors}
+        />
+        <Input
+          label="收件人電話"
+          id="tel"
+          type="tel"
+          name="tel"
+          placeholder="請輸入電話"
+          register={register}
           rules={registerRules.tel}
-          errors={errors} />
-        <Input label='收件人地址' id='address' name='address' type='text' placeholder="請輸入地址" register={register} 
+          errors={errors}
+        />
+        <Input
+          label="收件人地址"
+          id="address"
+          name="address"
+          type="text"
+          placeholder="請輸入地址"
+          register={register}
           rules={registerRules.address}
-          errors={errors} />
+          errors={errors}
+        />
         <div className="mb-3">
           <label htmlFor="message" className="form-label">
             留言
@@ -94,13 +127,13 @@ const CustomerInfo = (props) => {
           <textarea
             id="message"
             className="form-control"
-            cols="30"
-            rows="5"
+            cols="20"
+            rows="2"
             {...register("message")}
           ></textarea>
         </div>
         <div className="text-end">
-          <button type="submit" className="btn btn-danger">
+          <button type="submit" className="btn btn-danger w-100">
             送出訂單
           </button>
         </div>

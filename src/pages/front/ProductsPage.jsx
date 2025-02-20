@@ -1,9 +1,9 @@
-import { useEffect, useState,useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Outlet } from "react-router-dom";
 import { apiService } from "../../apiService/apiService";
 import { Product, LoadingOverlay, ProductModal } from "../../component/front";
 import { tempProductDefaultValue } from "../../data/data";
-import { useNavigatePage } from '../../hook';
+import { useNavigatePage } from "../../hook";
 const APIPath = import.meta.env.VITE_API_PATH;
 
 export default function ProductsPage() {
@@ -15,12 +15,15 @@ export default function ProductsPage() {
   const openProductDetailModal = () => {
     setIsProductModalOpen(true);
   };
-  const handleSeeMore = useCallback((productId) => {
-    const temp = products.find((item) => item.id === productId);
-    setTempProduct(temp);
-    openProductDetailModal();
-    navigate(`/products/productBySide/${productId}`);
-  },[products]);
+  const handleSeeMore = useCallback(
+    (productId) => {
+      const temp = products.find((item) => item.id === productId);
+      setTempProduct(temp);
+      openProductDetailModal();
+      navigate(`/products/productBySide/${productId}`);
+    },
+    [products]
+  );
   const getProducts = async () => {
     setIsLoading(true);
     try {
@@ -63,8 +66,9 @@ export default function ProductsPage() {
               </tbody>
             </table>
           </div>
-          <div className="col-4">
-            <Outlet/>
+          <div className="col-4 mt-2 ">
+            <p className="fw-bold">選擇商品細節</p>
+            <Outlet />
           </div>
         </div>
       </div>

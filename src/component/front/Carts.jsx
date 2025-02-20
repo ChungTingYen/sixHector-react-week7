@@ -4,7 +4,7 @@ const APIPath = import.meta.env.VITE_API_PATH;
 import { useDispatch } from "react-redux";
 import { setIsShowToastSlice } from "../../slice/toastSlice";
 const Carts = (props) => {
-  const { cart, handleDeleteCart,setIsLoading,setReload } = props;
+  const { cart, handleDeleteCart, setIsLoading, setReload } = props;
   const dispatch = useDispatch();
   const handleIncreDecreProduct = async (cartId, type) => {
     setIsLoading(true);
@@ -17,22 +17,26 @@ const Carts = (props) => {
       };
       await apiService.axiosPut(`/api/${APIPath}/cart/${cartId}`, putData);
       setReload(true);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:"warning",
-          text:`${type === '+' ? '增加商品數量完成' : '減少商品數量完成'}`,
-          isShowToast:true
-        }
-      }));
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            type: "warning",
+            text: `${type === "+" ? "增加商品數量完成" : "減少商品數量完成"}`,
+            isShowToast: true,
+          },
+        })
+      );
     } catch (error) {
       console.log(error);
-      dispatch(setIsShowToastSlice({
-        toastInfo:{
-          type:"warning",
-          text:'數量變更失敗',
-          isShowToast:true
-        }
-      }));
+      dispatch(
+        setIsShowToastSlice({
+          toastInfo: {
+            type: "warning",
+            text: "數量變更失敗",
+            isShowToast: true,
+          },
+        })
+      );
       alert(error);
     } finally {
       setIsLoading(false);
@@ -73,33 +77,43 @@ const Carts = (props) => {
         </td>
         <td>
           <div className="d-flex justify-content-center">
-            <div className="btn-group" role="group">
-              <button
-                type="button"
-                className={`btn btn-outline-dark btn-sm ${
-                  cart.qty <= 1 ? "bg-secondary" : ""
-                }`}
-                onClick={() => handleIncreDecreProduct(cart.id, "-")}
-                disabled={cart.qty <= 1 && true}
-              >
-                -
-              </button>
-              <span
-                className="btn border border-dark"
-                style={{ width: "50px", cursor: "auto" }}
-              >
-                {cart.qty}
-              </span>
-              <button
-                type="button"
-                className="btn btn-outline-dark btn-sm"
-                onClick={() => handleIncreDecreProduct(cart.id, "+")}
-              >
-                +
-              </button>
-              <span className="input-group-text bg-transparent border-0">
-                {cart.product.unit}
-              </span>
+            <div className="row">
+              <div className="col-6">
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger btn-sm"
+                    style={{ width: "50px" }}
+                    onClick={() => handleIncreDecreProduct(cart.id, "+")}
+                  >
+                    🡅
+                  </button>
+                </div>
+                <div>
+                  <span
+                    className="btn border border-dark"
+                    style={{ width: "50px", cursor: "auto" }}
+                  >
+                    {cart.qty}
+                  </span>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    className={`btn btn-outline-primary btn-sm ${
+                      cart.qty <= 1 ? "bg-secondary" : ""
+                    }`}
+                    onClick={() => handleIncreDecreProduct(cart.id, "-")}
+                    style={{ width: "50px" }}
+                    disabled={cart.qty <= 1 && true}
+                  >
+                    🡇
+                  </button>
+                </div>
+              </div>
+              <div className="col-6 d-flex align-items-center">
+                <span className="ml-3">{cart.product.unit}</span>
+              </div>
             </div>
           </div>
         </td>
