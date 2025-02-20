@@ -70,6 +70,7 @@ const Product = (props) => {
           </button>
           <Link
             to={`/product/${product.id}`}
+            onClick={atHandleSeeMore}
             className="btn btn-outline-secondary"
           >
             查看更多(轉頁)

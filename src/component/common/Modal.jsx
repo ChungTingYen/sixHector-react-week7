@@ -75,12 +75,8 @@ const Modal = forwardRef((props, ref) => {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div
-          className="modal-dialog"
-          // style={{ width: "600px", height: "600px" }}
-          style={modalSize}
-        >
-          <div className="modal-content">
+        <div className="modal-dialog">
+          <div className="modal-content" style={modalSize}>
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
                 {/* 商品放大圖 */}
@@ -94,27 +90,26 @@ const Modal = forwardRef((props, ref) => {
               ></button>
             </div>
             <div
-              className="modal-body d-flex justify-content-center align-items-center"
+              className="modal-body d-flex justify-content-center"
               style={modalImgSize}
               id="modalBody"
             >
               <img
-                // src={imageSrc}
                 ref={imageRef}
                 className="img-fluid"
                 alt=''
-                style={{ maxWidth: "100%", maxHeight: "100%" }}
                 id="picture"
               />
             </div>
-            <div className="modal-footer">
+            <div className="text-end m-2 ">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn btn-danger "
+                style={{ width: '20%' }}
                 // data-bs-dismiss="modal"
                 onClick={closeModal}
               >
-                Close
+                關閉視窗
               </button>
             </div>
           </div>

@@ -32,7 +32,6 @@ export default function ProductDetailPageBySide(){
               className="card-img-top primary-image"
               alt="主圖"
               style={ { cursor: "pointer",width: "90%", height: "100%",objectFit: "cover", }}
-              // ref={product.imgSrcRef}
               onClick={() => handleImageClick(product.imageUrl)}
             />
             <div className="card-body">
@@ -75,8 +74,8 @@ export default function ProductDetailPageBySide(){
       <Modal
         ref={modalRef}
         modalBodyText="商品放大圖"
-        modalSize={{ width: "600px", height: "600px" }}
-        modalImgSize={{ width: "500px", height: "500px" }}
+        modalSize={{ width: "600px", height: "800px" }}
+        modalImgSize={{ width: "600px", height: "600px" }}
       />
     </>
   );

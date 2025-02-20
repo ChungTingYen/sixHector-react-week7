@@ -76,15 +76,6 @@ const FlashModal = ()=> {
             >
               {getMessage(flashModalSlice.text)}
             </div>
-            {/* <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={closeFlashModal}
-              >
-                Close
-              </button>
-            </div> */}
           </div>
         </div>
       </div>
