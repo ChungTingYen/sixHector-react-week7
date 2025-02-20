@@ -46,7 +46,7 @@ const ToastComponent = () => {
         ref={toastDivRef}
       >
         <div className="toast-body d-flex">
-          {toastSlice.text}
+          <strong className="me-auto">{toastSlice.text}</strong>
           <button
             type="button"
             className="btn-close ms-auto flex-shrink-0"

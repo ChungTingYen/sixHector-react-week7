@@ -58,7 +58,7 @@ const FlashModal = ()=> {
         style={{ zIndex: 1099 }}
       >
         <div className="modal-dialog" style={{ width: "30%" }}>
-          <div className="modal-content">
+          <div className="modal-content" style={{ height:'200px' }}>
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="exampleModalLabel">
                訊息
@@ -76,7 +76,7 @@ const FlashModal = ()=> {
             >
               {getMessage(flashModalSlice.text)}
             </div>
-            <div className="modal-footer">
+            {/* <div className="modal-footer">
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -84,7 +84,7 @@ const FlashModal = ()=> {
               >
                 Close
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
