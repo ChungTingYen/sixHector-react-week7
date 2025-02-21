@@ -29,7 +29,7 @@ const Product = (props) => {
     }
   };
   return (<>
-    <tr>
+    <tr >
       <td
         style={{
           width: "150px",
@@ -57,7 +57,7 @@ const Product = (props) => {
         <div className="h5 text-danger">特價 {product.price} 元</div>
       </td>
     </tr>
-    <tr>
+    <tr className="border border-0 border-bottom border-info border-2">
       <td colSpan="3">
         <span><b>功能</b></span>
         <div className="btn-group btn-group-sm d-flex">

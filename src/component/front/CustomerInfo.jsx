@@ -75,7 +75,7 @@ const CustomerInfo = (props) => {
     }
   };
   return (
-    <div className="my-2  row justify-content-center border border-0 border-start border-secondary border-2">
+    <div className="my-2  row justify-content-center">
       <p className="fw-bold text-center display-6 text-primary">
         請輸入訂購人資料
       </p>

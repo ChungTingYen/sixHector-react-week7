@@ -20,7 +20,7 @@ export default function ProductsPage() {
       const temp = products.find((item) => item.id === productId);
       setTempProduct(temp);
       openProductDetailModal();
-      navigate(`/products/productBySide/${productId}`);
+      // navigate(`/products/productBySide/${productId}`);
     },
     [products]
   );

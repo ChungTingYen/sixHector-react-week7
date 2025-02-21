@@ -55,7 +55,7 @@ export default function CartPage() {
     <>
       <div className="container">
         <div className="row">
-          <div className="col-7">
+          <div className="col-7 border border-0 border-end border-secondary border-2">
             <table className="table align-middle">
               <thead>
                 <tr>

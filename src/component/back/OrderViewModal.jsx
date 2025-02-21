@@ -2,6 +2,7 @@
 import { useRef, useState, useEffect, Fragment } from "react";
 import { Modal } from "bootstrap";
 function OrderEditModal(props) {
+
   const editModalDivRef = useRef();
   const { editProduct, setModalMode, isModalOpen, setIsModalOpen } = props;
   const [modalProduct, setModalProduct] = useState(editProduct);
@@ -16,9 +17,26 @@ function OrderEditModal(props) {
     setIsModalOpen(false);
     setModalMode(null);
   };
+  const [toggleState,setToggleState] = useState({});
+  const handleToggleDetail = (key)=>{
+    setToggleState((prev)=>(
+      {
+        ...prev,
+        [key]:!prev[key]
+      })
+    );
+  };
   useEffect(() => {
     if (editModalDivRef.current) {
+      const modalElement = editModalDivRef.current;
       new Modal(editModalDivRef.current, { backdrop: true });
+      const handleClose = ()=>{
+        setToggleState({});
+      };
+      modalElement.addEventListener('hidden.bs.modal', handleClose);
+      return () => {
+        modalElement.removeEventListener('hidden.bs.modal', handleClose);
+      };
     }
   }, []);
 
@@ -69,24 +87,34 @@ function OrderEditModal(props) {
                         ([key, value], index) => {
                           return (
                             <Fragment key={key}>
-                              <span className="text-primary">
+                              <div className="text-primary">
                                 訂購商品{index + 1}:
+                              </div>
+                              <span
+                                onClick={() => handleToggleDetail(key)}
+                                className={`toggle-span ${toggleState[key] ? 'text-secondary' : 'text-warning'}`}
+                                style={{ cursor: 'pointer', display: 'inline-flex', alignItems: 'center' }}
+                              >
+                                {toggleState[key] ? '隱藏詳細訊息🡅' : '顯示詳細訊息🡇'}
                               </span>
-                              <ul className="list-group">
-                                <li>Order product list ID: {key}</li>
-                                <li>Product product ID: {value.product?.id}</li>
-                                <li>Product Title: {value.product?.title}</li>
-                                <li>
-                                  Product Category: {value.product?.category}
-                                </li>
-                                <li>Product qty: {value.qty}</li>
-                                <li>
-                                  Product Origin Price:{" "}
-                                  {value.product?.origin_price}
-                                </li>
-                                <li>Product Price: {value.product?.price}</li>
-                                <li>Product Total: {value.total}</li>
-                              </ul>
+                              {
+                                toggleState[key] && (<ul className="list-group">
+                                  <li>Order product list ID: {key}</li>
+                                  <li>Product product ID: {value.product?.id}</li>
+                                  <li>Product Title: {value.product?.title}</li>
+                                  <li>
+                                    Product Category: {value.product?.category}
+                                  </li>
+                                  <li>Product qty: {value.qty}</li>
+                                  <li>
+                                    Product Origin Price:{" "}
+                                    {value.product?.origin_price}
+                                  </li>
+                                  <li>Product Price: {value.product?.price}</li>
+                                  <li>Product Total: {value.total}</li>
+                                </ul>)
+                              }
+                              
                               <hr />
                             </Fragment>
                           );

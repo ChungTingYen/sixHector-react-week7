@@ -197,6 +197,9 @@ function OrderEditModal(props) {
                   ([key, value], index) => (
                     <Fragment key={key}>
                       <div className="mb-3">
+                        <div>
+                          <span className="text-primary fw-bold">訂購商品{index + 1}:</span>
+                        </div>
                         <label className="form-label">Order list id</label>
                         <input
                           name={key}
