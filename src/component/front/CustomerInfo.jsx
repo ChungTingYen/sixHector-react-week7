@@ -34,7 +34,7 @@ const CustomerInfo = (props) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors,isValid },
     reset,
     watch,
   } = useForm({
@@ -133,7 +133,7 @@ const CustomerInfo = (props) => {
           ></textarea>
         </div>
         <div className="text-end">
-          <button type="submit" className="btn btn-danger w-100">
+          <button type="submit" className="btn btn-danger w-100" disabled={!isValid}>
             送出訂單
           </button>
         </div>
